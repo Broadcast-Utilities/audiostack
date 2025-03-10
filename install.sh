@@ -80,15 +80,26 @@ require_tool "docker"
 
 # Display a welcome banner
 clear
+# Display a fancy banner for the sysadmin
 cat << "EOF"
- ______     _     ___          __       _     ______ __  __
-|___  /    (_)   | \ \        / /      | |   |  ____|  \/  |
-   / /_   _ _  __| |\ \  /\  / /__  ___| |_  | |__  | \  / |
-  / /| | | | |/ _` | \ \/  \/ / _ \/ __| __| |  __| | |\/| |
- / /_| |_| | | (_| |  \  /\  /  __/\__ \ |_  | |    | |  | |
-/_____\__,_|_|\__,_|   \/  \/ \___||___/\__| |_|    |_|  |_|
+
+   ___  ___  ____  ___   ___  ________   __________
+  / _ )/ _ \/ __ \/ _ | / _ \/ ___/ _ | / __/_  __/
+ / _  / , _/ /_/ / __ |/ // / /__/ __ |_\ \  / /   
+/____/_/|_|\____/_/_|_/____/\___/_/_|_/___/_/_/    
+ / / / /_  __/  _/ /  /  _/_  __/  _/ __/ __/      
+/ /_/ / / / _/ // /___/ /  / / _/ // _/_\ \        
+\____/ /_/ /___/____/___/ /_/ /___/___/___/        
+                                                   
+ ****************************************
+ *    Liquidsoap Installation Script    *
+ *        A part of AudioStack          *  
+ *  Made with ♥ by Broadcast Utilities  *
+ *                V1.0.0                *
+ ****************************************
 EOF
-echo -e "${GREEN}⎎ Liquidsoap and StereoTool Installation${NC}\n"
+echo -e "${GREEN}Welcome to the Liquidsoap installation script!${NC}"
+
 
 # Prompt user for input
 ask_user "STATION_CONFIG" "zuidwest" "Which station configuration would you like to use? (zuidwest/rucphen)" "str"
