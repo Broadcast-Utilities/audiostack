@@ -1,4 +1,4 @@
-name: zwfm-liquidsoap
+name: broadcastutilities-audiostack
 services:
   liquidsoap:
     image: savonet/liquidsoap:v2.3.1
