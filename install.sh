@@ -101,17 +101,31 @@ else
   exit 1
 fi
 
+backup_file "${LIQUIDSOAP_CONFIG_PATH}"
+if ! curl -sLo "${LIQUIDSOAP_CONFIG_PATH}" "${LIQUIDSOAP_CONFIG_URL}"; then
+  echo -e "${RED}Error: Unable to download the Liquidsoap configuration file.${NC}"
+  exit 1
+fi
+
+
+
 backup_file "${DOCKER_COMPOSE_PATH}"
 if ! curl -sLo "${DOCKER_COMPOSE_PATH}" "${DOCKER_COMPOSE_URL}"; then
   echo -e "${RED}Error: Unable to download docker-compose.yml.${NC}"
   exit 1
 fi
+docker-compose -f "${DOCKER_COMPOSE_PATH}" pull
+docker-compose -f "${DOCKER_COMPOSE_PATH}" up -d
+
+
 
 backup_file "${AUDIO_FALLBACK_PATH}"
 if ! curl -sLo "${AUDIO_FALLBACK_PATH}" "${AUDIO_FALLBACK_URL}"; then
   echo -e "${RED}Error: Unable to download the audio fallback file.${NC}"
   exit 1
 fi
+
+
 
 # Adjust ownership for the directories
 echo -e "${BLUE}►► Setting ownership for ${INSTALL_DIR}...${NC}"
