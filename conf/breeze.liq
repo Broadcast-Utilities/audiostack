@@ -80,9 +80,6 @@ radio =
 audio_to_icecast = mksafe(buffer(radio))
 clock.assign_new(id="icecast_clock", [audio_to_icecast])
 
-# Create a clock for output to Radio Netwerk Nederland
-audio_to_rnn = mksafe(buffer(radioproc))
-clock.assign_new(id="rnn_clock", [audio_to_rnn])
 
 # Function to output an icecast stream with common parameters
 def output_icecast_stream(~format, ~description, ~mount, ~source) =
