@@ -4,7 +4,7 @@
 clear
 
 # Download the functions library
-if ! curl -s -o /tmp/functions.sh https://raw.githubusercontent.com/oszuidwest/bash-functions/main/common-functions.sh; then
+if ! curl -s -o /tmp/functions.sh https://raw.githubusercontent.com/broadcast-utilities/bash-functions/main/common-functions.sh; then
   echo -e "*** Failed to download functions library. Please check your network connection! ***"
   exit 1
 fi
@@ -44,8 +44,8 @@ ask_user "SOURCEPASS" "hackme" "Specify the source and relay password" "str"
 ask_user "ADMINPASS" "hackme" "Specify the admin password" "str"
 ask_user "LOCATED" "Earth" "Where is this server located (visible on admin pages)?" "str"
 ask_user "ADMINMAIL" "root@localhost.local" "What's the admin's e-mail (visible on admin pages and for Let's Encrypt)?" "email"
-ask_user "PORT" "80" "Specify the port" "num"
-ask_user "SSL" "n" "Do you want Let's Encrypt to get a certificate for this server? (y/n)" "y/n"
+ask_user "PORT" "8000" "Specify the port" "num"
+
 
 # Sanitize the entered hostname(s)
 HOSTNAMES=$(echo "$HOSTNAMES" | xargs)
@@ -79,7 +79,7 @@ cat <<EOF > "$ICECAST_XML"
   <hostname>$PRIMARY_HOSTNAME</hostname>
 
   <limits>
-    <clients>5000</clients>
+    <clients>8000</clients>
     <sources>25</sources>
     <burst-size>265536</burst-size>
   </limits>
@@ -123,35 +123,3 @@ systemctl enable icecast2
 systemctl daemon-reload
 systemctl restart icecast2
 
-# SSL configuration
-if [ "$SSL" = "y" ] && [ "$PORT" = "80" ]; then
-  echo -e "${BLUE}►► Running Certbot to obtain SSL certificate for domains: ${HOSTNAMES_ARRAY[*]} ${NC}"
-  certbot --text --agree-tos --email "$ADMINMAIL" --noninteractive --no-eff-email \
-    --webroot --webroot-path="/usr/share/icecast2/web" \
-    "${DOMAINS_FLAGS[@]}" \
-    --deploy-hook "cat /etc/letsencrypt/live/$PRIMARY_HOSTNAME/fullchain.pem /etc/letsencrypt/live/$PRIMARY_HOSTNAME/privkey.pem > /usr/share/icecast2/icecast.pem && systemctl restart icecast2" \
-    certonly
-
-  # Check if Certbot successfully obtained a certificate
-  if [ -f "/usr/share/icecast2/icecast.pem" ]; then
-    # Update icecast.xml with SSL settings
-    sed -i "/<paths>/a \
-    \    <ssl-certificate>/usr/share/icecast2/icecast.pem</ssl-certificate>" "$ICECAST_XML"
-    
-    sed -i "/<\/listen-socket>/a \
-    <listen-socket>\n\
-        <port>443</port>\n\
-        <ssl>1</ssl>\n\
-    </listen-socket>" "$ICECAST_XML"
-
-    # Restart Icecast to apply the new configuration
-    echo -e "${BLUE}►► Restarting Icecast with SSL support${NC}"
-    systemctl restart icecast2
-  else
-    echo -e "${YELLOW} !! SSL certificate acquisition failed. Icecast will continue running on port ${PORT}.${NC}"
-  fi
-else
-  if [ "$SSL" = "y" ]; then
-    echo -e "${YELLOW} !! SSL setup is only possible when Icecast is running on port 80. You entered port ${PORT}. Skipping SSL configuration.${NC}"
-  fi
-fi
