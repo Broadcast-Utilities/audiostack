@@ -28,7 +28,7 @@ LIQUIDSOAP_CONFIG_URL_BREEZE="${GITHUB_BASE}/conf/breeze.liq"
 LIQUIDSOAP_CONFIG_PATH="${INSTALL_DIR}/scripts/radio.liq"
 
 
-AUDIO_FALLBACK_PATH="${INSTALL_DIR}/audio/fallback.ogg"
+AUDIO_FALLBACK_PATH="${INSTALL_DIR}/audio/fallback.mp3"
 
 # General configuration
 TIMEZONE="Europe/Amsterdam"
