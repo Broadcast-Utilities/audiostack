@@ -1,7 +1,3 @@
-# Audio defaults
-settings.frame.audio.channels := 2
-settings.frame.audio.samplerate := 48000
-
 # Streaming configuration (do change this)
 icecastserver = "icecast.broadcastutilities.nl"
 icecastport = 80
