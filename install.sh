@@ -24,11 +24,11 @@ DOCKER_COMPOSE_URL="${GITHUB_BASE}/docker-compose.yml"
 DOCKER_COMPOSE_PATH="${INSTALL_DIR}/docker-compose.yml"
 
 # Liquidsoap configuration
-LIQUIDSOAP_CONFIG_URL_MAIN="${GITHUB_BASE}/conf/main.liq"
+LIQUIDSOAP_CONFIG_URL_BREEZE="${GITHUB_BASE}/conf/breeze.liq"
 LIQUIDSOAP_CONFIG_PATH="${INSTALL_DIR}/scripts/radio.liq"
 
-AUDIO_FALLBACK_URL="https://upload.wikimedia.org/wikipedia/commons/6/66/Aaron_Dunn_-_Sonata_No_1_-_Movement_2.ogg"
-AUDIO_FALLBACK_PATH="${INSTALL_DIR}/audio/fallback.ogg"
+
+AUDIO_FALLBACK_PATH="${INSTALL_DIR}/audio/fallback.mp3"
 
 # General configuration
 TIMEZONE="Europe/Amsterdam"
@@ -73,7 +73,15 @@ echo -e "${GREEN}Welcome to the Liquidsoap installation script!${NC}"
 
 
 # Prompt user for input
-ask_user "STATION_CONFIG" "main" "Which station configuration would you like to use? ('main' is the only option (at this moment))" "str"
+ask_user "STATION_CONFIG" "breeze" "Which station configuration would you like to use? (Breeze is the only option (at this moment))" "str"
+
+
+ask_user "ICECAST_HOSTNAME" "icecast.broadcastutilities.nl" "Specify the Icecast hostname (e.g., icecast.example.com) (enter without http:// or www)" "str"
+ask_user "ICECAST_PORT" "8000" "Specify the Icecast port (default is 8000)" "num"
+ask_user "ICECAST_SOURCEPASS" "hackme" "Specify the Icecast source password (default is 'hackme')" "str"
+ask_user "SRT_UPSTREAM_PASS" "hackme" "Specify the SRT upstream password (default is 'hackme')" "str"
+ask_user "AUDIO_FALLBACK_URL" "https://upload.wikimedia.org/wikipedia/commons/6/66/Aaron_Dunn_-_Sonata_No_1_-_Movement_2.ogg" "Specify the URL for the fallback audio file (default is a sample file)" "url"
+
 
 # Validate station configuration
 ask_user "DO_UPDATES" "y" "Would you like to perform all OS updates? (y/n)" "y/n"
@@ -94,10 +102,10 @@ done
 echo -e "${BLUE}►► Downloading configuration files...${NC}"
 
 # Set configuration URL based on user choice
-if [ "${STATION_CONFIG}" == "MAIN" ]; then
-  LIQUIDSOAP_CONFIG_URL="${LIQUIDSOAP_CONFIG_URL_MAIN}"
+if [ "${STATION_CONFIG}" == "breeze" ]; then
+  LIQUIDSOAP_CONFIG_URL="${LIQUIDSOAP_CONFIG_URL_breeze}"
 else
-  echo -e "${RED}Error: Invalid station configuration. Must be 'MAIN'.${NC}"
+  echo -e "${RED}Error: Invalid station configuration. Must be 'breeze'.${NC}"
   exit 1
 fi
 
@@ -106,6 +114,12 @@ if ! curl -sLo "${LIQUIDSOAP_CONFIG_PATH}" "${LIQUIDSOAP_CONFIG_URL}"; then
   echo -e "${RED}Error: Unable to download the Liquidsoap configuration file.${NC}"
   exit 1
 fi
+
+# Update the Liquidsoap configuration with user inputs
+sed -i "s|icecast.broadcastutilities.nl|${ICECAST_HOSTNAME}|g" "${LIQUIDSOAP_CONFIG_PATH}"
+sed -i "s|80|${ICECAST_PORT}|g" "${LIQUIDSOAP_CONFIG_PATH}"
+sed -i "s|hackme|${ICECAST_SOURCEPASS}|g" "${LIQUIDSOAP_CONFIG_PATH}"
+sed -i "s|foxtrot-uniform-charlie-kilo|${SRT_UPSTREAM_PASS}|g" "${LIQUIDSOAP_CONFIG_PATH}"
 
 
 
@@ -124,6 +138,7 @@ if ! curl -sLo "${AUDIO_FALLBACK_PATH}" "${AUDIO_FALLBACK_URL}"; then
   echo -e "${RED}Error: Unable to download the audio fallback file.${NC}"
   exit 1
 fi
+
 
 
 

@@ -3,10 +3,10 @@ settings.frame.audio.channels := 2
 settings.frame.audio.samplerate := 48000
 
 # Streaming configuration (do change this)
-icecastserver = "icecast.zuidwest.cloud"
+icecastserver = "icecast.broadcastutilities.nl"
 icecastport = 80
 icecastpassword = "hackme"
-fallbackfile = "/audio/fallback.mp3"
+fallbackfile = "/audio/fallback.ogg"
 upstreampassword = "foxtrot-uniform-charlie-kilo"
 
 # Logging function for various events
@@ -34,19 +34,6 @@ studio_a =
     on_disconnect=fun () -> log_event("studio_a", "disconnected")
   )
 
-# Input for backup studio stream
-studio_b =
-  input.srt(
-    id="studio_b",
-    port=9999,
-    mode="listener",
-    max=10.0,
-    streamid="studio_b",
-    enforced_encryption=true,
-    passphrase=upstreampassword,
-    on_connect=fun () -> log_event("studio_b", "connected"),
-    on_disconnect=fun () -> log_event("studio_b", "disconnected")
-  )
 
 # Log silence detection and resumption
 studio_a =
@@ -68,53 +55,19 @@ studio_a =
     studio_a
   )
 
-studio_b =
-  blank.detect(
-    id="detect_studio_b",
-    max_blank=15.0,
-    min_noise=15.0,
-    fun () ->
-      log_event(
-        "studio_b",
-        "silence detected"
-      ),
-    on_noise=
-      fun () ->
-        log_event(
-          "studio_b",
-          "audio resumed"
-        ),
-    studio_b
-  )
-
 # Consider inputs unavailable when silent
 studio_a =
   blank.strip(id="stripped_studio_a", max_blank=15., min_noise=15., studio_a)
-studio_b =
-  blank.strip(id="stripped_studio_b", max_blank=15., min_noise=15., studio_b)
 
 # Wrap it in a buffer to prevent latency from connection/disconnection to impact downstream operators/output
 studio_a = buffer(id="buffered_studio_a", fallible=true, studio_a)
-studio_b = buffer(id="buffered_studio_b", fallible=true, studio_b)
 
 # Combine live inputs and fallback
 radio =
   fallback(
-    id="radio_prod", track_sensitive=false, [studio_a, studio_b, noodband]
+    id="radio_prod", track_sensitive=false, [studio_a, noodband]
   )
 
-# StereoTool implementation
-radioproc =
-  stereotool(
-    library_file="/var/cache/liquidsoap/st_plugin.so",
-    license_key=
-      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    preset="/var/cache/liquidsoap/.st_plugin.so.rc",
-    radio
-  )
-
-# Send processed audio to a dummy output since we only use it for MicroMPX
-output.dummy(radioproc)
 
 ##############################################################################
 #                             WARNING                                        #
@@ -144,7 +97,7 @@ def output_icecast_stream(~format, ~description, ~mount, ~source) =
     port=icecastport,
     password=icecastpassword,
     name=
-      "ZuidWest FM",
+      "Breeze Radio",
     description=description,
     mount=mount,
     source
@@ -155,8 +108,8 @@ end
 output_icecast_stream(
   format=%mp3(bitrate = 192, samplerate = 48000, internal_quality = 0),
   description=
-    "Hoge Kwaliteit Stream (192kbit MP3)",
-  mount="/zuidwest.mp3",
+    "HQ Stream (192kbit MP3)",
+  mount="/breeze.mp3",
   source=audio_to_icecast
 )
 
@@ -174,32 +127,7 @@ output_icecast_stream(
     ),
   description=
     "Mobile Stream (96kbit AAC)",
-  mount="/zuidwest.aac",
+  mount="/breeze.aac",
   source=audio_to_icecast
 )
 
-# Output a high bitrate AAC stream
-output_icecast_stream(
-  format=
-    %fdkaac(
-      channels = 2,
-      samplerate = 48000,
-      bitrate = 576,
-      afterburner = true,
-      aot = 'mpeg4_aac_lc',
-      transmux = 'adts',
-      sbr_mode = true
-    ),
-  description=
-    "Transport Stream (576kbit AAC)",
-  mount="/zuidwest.stl",
-  source=audio_to_icecast
-)
-
-# Feed the audio to ODR-AudioEnc
-output.external(
-  %wav(channels = 2, samplerate = 48000),
-  "/bin/odr-audioenc -i - --bitrate=112 --stats=/dabplus/sockets/dab_stats \
-   --pad-socket=/dabplus/sockets/dab_pad --edi='tcp://localhost:7000'",
-  audio_to_rnn
-)
