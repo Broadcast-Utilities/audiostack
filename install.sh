@@ -103,7 +103,7 @@ echo -e "${BLUE}►► Downloading configuration files...${NC}"
 
 # Set configuration URL based on user choice
 if [ "${STATION_CONFIG}" == "breeze" ]; then
-  LIQUIDSOAP_CONFIG_URL="${LIQUIDSOAP_CONFIG_URL_breeze}"
+  LIQUIDSOAP_CONFIG_URL="${LIQUIDSOAP_CONFIG_URL_BREEZE}"
 else
   echo -e "${RED}Error: Invalid station configuration. Must be 'breeze'.${NC}"
   exit 1
