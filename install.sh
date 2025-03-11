@@ -17,7 +17,7 @@ source "${FUNCTIONS_LIB_PATH}"
 
 # Define base variables
 INSTALL_DIR="/opt/liquidsoap"
-GITHUB_BASE="https://raw.githubusercontent.com/broadcast-utilities/audiostack/production"
+GITHUB_BASE="https://raw.githubusercontent.com/broadcast-utilities/audiostack/main"
 
 # Docker files
 DOCKER_COMPOSE_URL="${GITHUB_BASE}/docker-compose.yml"
