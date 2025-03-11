@@ -1,4 +1,4 @@
-# Breeze-AudioServer
+# Broadcast Utilities AudioStack
 This repository contains an audio streaming solution made for [Breeze Radio](https://breezeradio.nl)  Using [Liquidsoap](https://www.liquidsoap.info) and [Icecast](https://icecast.org/).
 
 ## Components
@@ -6,7 +6,7 @@ This repository contains an audio streaming solution made for [Breeze Radio](htt
 2. **Icecast**: Functions as a public server for distributing the audio stream.
 
 ## System design
-The system design involves delivering the broadcast through two pathways. Liquidsoap uses the main input (SRT 1) as much as possible. If it becomes unavailable or silent, the system switches to an emergency track.
+The system design involves delivering the broadcast through SRT. Liquidsoap uses the main input (SRT 1) as much as possible. If it becomes unavailable or silent, the system switches to an emergency track.
 
 ## Scripts
 - **icecast2.sh**: This script installs Icecast 2 and provides SSL support via Let's Encrypt/Certbot. Execute it using `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/oszuidwest/zwfm-liquidsoap/main/icecast2.sh)"`
