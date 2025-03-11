@@ -4,7 +4,7 @@
 clear
 
 # Download the functions library
-if ! curl -s -o /tmp/functions.sh https://raw.githubusercontent.com/oszuidwest/bash-functions/main/common-functions.sh; then
+if ! curl -s -o /tmp/functions.sh https://raw.githubusercontent.com/broadcast-utilities/bash-functions/main/common-functions.sh; then
   echo -e "*** Failed to download functions library. Please check your network connection! ***"
   exit 1
 fi
@@ -44,8 +44,8 @@ ask_user "SOURCEPASS" "hackme" "Specify the source and relay password" "str"
 ask_user "ADMINPASS" "hackme" "Specify the admin password" "str"
 ask_user "LOCATED" "Earth" "Where is this server located (visible on admin pages)?" "str"
 ask_user "ADMINMAIL" "root@localhost.local" "What's the admin's e-mail (visible on admin pages and for Let's Encrypt)?" "email"
-ask_user "PORT" "80" "Specify the port" "num"
-ask_user "SSL" "n" "Do you want Let's Encrypt to get a certificate for this server? (y/n)" "y/n"
+ask_user "PORT" "8000" "Specify the port" "num"
+
 
 # Sanitize the entered hostname(s)
 HOSTNAMES=$(echo "$HOSTNAMES" | xargs)
