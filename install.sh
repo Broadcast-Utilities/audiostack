@@ -80,7 +80,7 @@ ask_user "ICECAST_HOSTNAME" "icecast.broadcastutilities.nl" "Specify the Icecast
 ask_user "ICECAST_PORT" "8000" "Specify the Icecast port (default is 8000)" "num"
 ask_user "ICECAST_SOURCEPASS" "hackme" "Specify the Icecast source password (default is 'hackme')" "str"
 ask_user "SRT_UPSTREAM_PASS" "hackme" "Specify the SRT upstream password (default is 'hackme')" "str"
-ask_user "AUDIO_FALLBACK_URL" "https://upload.wikimedia.org/wikipedia/commons/6/66/Aaron_Dunn_-_Sonata_No_1_-_Movement_2.ogg" "Specify the URL for the fallback audio file (default is a sample file)" "url"
+ask_user "AUDIO_FALLBACK_URL" "https://audio.broadcastutilities.nl/noodband.mp3" "Specify the URL for the fallback audio file (default is a sample file)" "url"
 
 
 # Validate station configuration
@@ -103,7 +103,7 @@ echo -e "${BLUE}►► Downloading configuration files...${NC}"
 
 # Set configuration URL based on user choice
 if [ "${STATION_CONFIG}" == "breeze" ]; then
-  LIQUIDSOAP_CONFIG_URL="${LIQUIDSOAP_CONFIG_URL_breeze}"
+  LIQUIDSOAP_CONFIG_URL="${LIQUIDSOAP_CONFIG_URL_BREEZE}"
 else
   echo -e "${RED}Error: Invalid station configuration. Must be 'breeze'.${NC}"
   exit 1
