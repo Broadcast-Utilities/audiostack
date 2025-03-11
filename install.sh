@@ -27,7 +27,7 @@ DOCKER_COMPOSE_PATH="${INSTALL_DIR}/docker-compose.yml"
 LIQUIDSOAP_CONFIG_URL_BREEZE="${GITHUB_BASE}/conf/breeze.liq"
 LIQUIDSOAP_CONFIG_PATH="${INSTALL_DIR}/scripts/radio.liq"
 
-AUDIO_FALLBACK_URL="https://upload.wikimedia.org/wikipedia/commons/6/66/Aaron_Dunn_-_Sonata_No_1_-_Movement_2.ogg"
+
 AUDIO_FALLBACK_PATH="${INSTALL_DIR}/audio/fallback.ogg"
 
 # General configuration
@@ -80,7 +80,7 @@ ask_user "ICECAST_HOSTNAME" "icecast.broadcastutilities.nl" "Specify the Icecast
 ask_user "ICECAST_PORT" "8000" "Specify the Icecast port (default is 8000)" "num"
 ask_user "ICECAST_SOURCEPASS" "hackme" "Specify the Icecast source password (default is 'hackme')" "str"
 ask_user "SRT_UPSTREAM_PASS" "hackme" "Specify the SRT upstream password (default is 'hackme')" "str"
-ask_user "FALLBACK_FILE_URL" "${AUDIO_FALLBACK_URL}" "Specify the URL for the fallback audio file (default is a sample file)" "url"
+ask_user "AUDIO_FALLBACK_URL" "https://upload.wikimedia.org/wikipedia/commons/6/66/Aaron_Dunn_-_Sonata_No_1_-_Movement_2.ogg" "Specify the URL for the fallback audio file (default is a sample file)" "url"
 
 # Validate station configuration
 ask_user "DO_UPDATES" "y" "Would you like to perform all OS updates? (y/n)" "y/n"
