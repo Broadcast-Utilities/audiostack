@@ -3,7 +3,7 @@ settings.frame.audio.channels := 2
 settings.frame.audio.samplerate := 48000
 
 # Streaming configuration (do change this)
-icecastserver = "icecast.zuidwest.cloud"
+icecastserver = "icecast.broadcastutilities.nl"
 icecastport = 80
 icecastpassword = "hackme"
 fallbackfile = "/audio/fallback.mp3"
