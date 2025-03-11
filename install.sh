@@ -81,6 +81,7 @@ ask_user "ICECAST_PORT" "8000" "Specify the Icecast port (default is 8000)" "num
 ask_user "ICECAST_SOURCEPASS" "hackme" "Specify the Icecast source password (default is 'hackme')" "str"
 ask_user "SRT_UPSTREAM_PASS" "hackme" "Specify the SRT upstream password (default is 'hackme')" "str"
 ask_user "AUDIO_FALLBACK_URL" "https://upload.wikimedia.org/wikipedia/commons/6/66/Aaron_Dunn_-_Sonata_No_1_-_Movement_2.ogg" "Specify the URL for the fallback audio file (default is a sample file)" "url"
+ask_user "AUDIO_FORMAT" "ogg" "Specify the audio format (default is ogg)" "str"
 
 # Validate station configuration
 ask_user "DO_UPDATES" "y" "Would you like to perform all OS updates? (y/n)" "y/n"
@@ -119,7 +120,7 @@ sed -i "s|icecast.broadcastutilities.nl|${ICECAST_HOSTNAME}|g" "${LIQUIDSOAP_CON
 sed -i "s|80|${ICECAST_PORT}|g" "${LIQUIDSOAP_CONFIG_PATH}"
 sed -i "s|hackme|${ICECAST_SOURCEPASS}|g" "${LIQUIDSOAP_CONFIG_PATH}"
 sed -i "s|foxtrot-uniform-charlie-kilo|${SRT_UPSTREAM_PASS}|g" "${LIQUIDSOAP_CONFIG_PATH}"
-sed -i "s|/audio/fallback.mp3|${AUDIO_FALLBACK_PATH}|g" "${LIQUIDSOAP_CONFIG_PATH}"
+sed -i "s|/audio/fallback.ogg|${AUDIO_FALLBACK_PATH}.${AUDIO_FORMAT}|g" "${LIQUIDSOAP_CONFIG_PATH}"
 
 
 
@@ -138,6 +139,7 @@ if ! curl -sLo "${AUDIO_FALLBACK_PATH}" "${AUDIO_FALLBACK_URL}"; then
   echo -e "${RED}Error: Unable to download the audio fallback file.${NC}"
   exit 1
 fi
+
 
 
 

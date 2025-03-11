@@ -6,7 +6,7 @@ settings.frame.audio.samplerate := 48000
 icecastserver = "icecast.broadcastutilities.nl"
 icecastport = 80
 icecastpassword = "hackme"
-fallbackfile = "/audio/fallback.mp3"
+fallbackfile = "/audio/fallback.ogg"
 upstreampassword = "foxtrot-uniform-charlie-kilo"
 
 # Logging function for various events
