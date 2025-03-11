@@ -75,6 +75,13 @@ echo -e "${GREEN}Welcome to the Liquidsoap installation script!${NC}"
 # Prompt user for input
 ask_user "STATION_CONFIG" "main" "Which station configuration would you like to use? ('main' is the only option (at this moment))" "str"
 
+
+ask_user "ICECAST_HOSTNAME" "localhost" "Specify the Icecast hostname (e.g., icecast.example.com) (enter without http:// or www)" "str"
+ask_user "ICECAST_PORT" "8000" "Specify the Icecast port (default is 8000)" "num"
+ask_user "ICECAST_SOURCEPASS" "hackme" "Specify the Icecast source password (default is 'hackme')" "str"
+ask_user "SRT_UPSTREAM-PASS" "hackme" "Specify the SRT upstream password (default is 'hackme')" "str"
+ask_user "FALLBACK_FILE_URL" "${AUDIO_FALLBACK_URL}" "Specify the URL for the fallback audio file (default is a sample file)" "url"
+
 # Validate station configuration
 ask_user "DO_UPDATES" "y" "Would you like to perform all OS updates? (y/n)" "y/n"
 
