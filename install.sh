@@ -80,7 +80,7 @@ ask_user "ICECAST_HOSTNAME" "icecast.broadcastutilities.nl" "Specify the Icecast
 ask_user "ICECAST_PORT" "8000" "Specify the Icecast port (default is 8000)" "num"
 ask_user "ICECAST_SOURCEPASS" "hackme" "Specify the Icecast source password (default is 'hackme')" "str"
 ask_user "SRT_UPSTREAM_PASS" "hackme" "Specify the SRT upstream password (default is 'hackme')" "str"
-ask_user "AUDIO_FALLBACK_URL" "https://audio.broadcastutilities.nl/noodband.mp3" "Specify the URL for the fallback audio file (default is a sample file)" "url"
+ask_user "AUDIO_FALLBACK_URL" "https://audio.broadcastutilities.nl/noodband.mp3" "Specify the URL for the fallback audio file (default is a sample file)" "str"
 
 
 # Validate station configuration
