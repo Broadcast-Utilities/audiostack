@@ -1,4 +1,4 @@
-# Broadcast Utilities AudioStack
+# BU AudioStack
 This repository contains an audio streaming solution. Using [Liquidsoap](https://www.liquidsoap.info) and [Icecast](https://icecast.org/).
 
 ## Components
