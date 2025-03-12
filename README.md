@@ -1,5 +1,5 @@
 # Broadcast Utilities AudioStack
-This repository contains an audio streaming solution made for [Breeze Radio](https://breezeradio.nl)  Using [Liquidsoap](https://www.liquidsoap.info) and [Icecast](https://icecast.org/).
+This repository contains an audio streaming solution. Using [Liquidsoap](https://www.liquidsoap.info) and [Icecast](https://icecast.org/).
 
 ## Components
 1. **Liquidsoap**: Acts as the primary audio router and transcoder.
