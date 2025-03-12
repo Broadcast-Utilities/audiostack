@@ -2,7 +2,7 @@
 
 # Load the functions library
 FUNCTIONS_LIB_PATH="/tmp/functions.sh"
-FUNCTIONS_LIB_URL="https://raw.githubusercontent.com/broadcast-utilities/bash-functions/main/common-functions.sh"
+FUNCTIONS_LIB_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/bash-functions/-/raw/main/common-functions.sh?ref_type=heads"
 
 # Download the latest version of the functions library
 rm -f "${FUNCTIONS_LIB_PATH}"
