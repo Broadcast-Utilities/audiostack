@@ -18,5 +18,5 @@ The system design involves delivering the broadcast through SRT. Liquidsoap uses
 
 ## Compatibility
 1. Tested on Ubuntu 24.04 and Debian 12.
-2. Supports x86_64 or ARM64 system architectures (e.g., Ampere Altra, Raspberry Pi). Note: StereoTool MicroMPX is currently not well-supported on ARM architectures.
+2. Supports x86_64 or ARM64 system architectures (e.g., Ampere Altra, Raspberry Pi).
 3. Requires an internet connection for script dependencies.
