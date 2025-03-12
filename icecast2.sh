@@ -4,7 +4,7 @@
 clear
 
 # Download the functions library
-if ! curl -s -o /tmp/functions.sh https://raw.githubusercontent.com/broadcast-utilities/bash-functions/main/common-functions.sh; then
+if ! curl -s -o /tmp/functions.sh https://gitlab.broadcastutilities.nl/broadcastutilities/radio/bash-functions/-/raw/main/common-functions.sh?ref_type=heads; then
   echo -e "*** Failed to download functions library. Please check your network connection! ***"
   exit 1
 fi
