@@ -13,7 +13,7 @@ The system design involves delivering the broadcast through SRT. Liquidsoap uses
 - **install.sh**: Installs Liquidsoap with fdkaac support in a Docker container. Execute it using `/bin/bash -c "$(curl -fsSL https://gitlab.broadcastutilities.nl/broadcastutilities/radio/audiostack/-/raw/main/install.sh?ref_type=heads)"`
 
 ## Configurations
-- **radio.liq**: A production-ready Liquidsoap configuration
+- **radio.liq**: A production-ready Liquidsoap config-file.
 - **docker-compose.yml**: Basic Liquidsoap configuration in Docker.
 
 ## Compatibility
