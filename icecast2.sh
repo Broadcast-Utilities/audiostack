@@ -1,18 +1,42 @@
 #!/usr/bin/env bash
 
-# Clear terminal
+# Exit script immediately on error
+set -e
+
+# ========================================================
+# Prompt for GitLab Credentials
+# ========================================================
+echo -e "\n${BLUE}Please enter your GitLab credentials to download required files:${NC}"
+ask_user "GITLAB_USER" "" "GitLab Username" "str"
+ask_user "GITLAB_TOKEN" "" "GitLab Personal Access Token (PAT)" "str"
+
+# ========================================================
+# Define Paths & URLs
+# ========================================================
+FUNCTIONS_LIB_PATH="/tmp/functions.sh"
+FUNCTIONS_LIB_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/bash-functions/-/raw/main/common-functions.sh?ref_type=heads"
+ICECAST_XML="/etc/icecast2/icecast.xml"
+TIMEZONE="Europe/Amsterdam"
+
+# ========================================================
+# Function to Download Files with Authentication
+# ========================================================
+download_file() {
+  local url="$1"
+  local dest="$2"
+
+  echo -e "${BLUE}Downloading: ${url} -> ${dest}${NC}"
+
+  if ! curl -sLo "${dest}" --user "${GITLAB_USER}:${GITLAB_TOKEN}" "${url}"; then
+    echo -e "${RED}Error: Unable to download ${url}. Check credentials or network.${NC}"
+    exit 1
+  fi
+}
+
+# ========================================================
+# Clear Terminal & Display Welcome Banner
+# ========================================================
 clear
-
-# Download the functions library
-if ! curl -s -o /tmp/functions.sh https://gitlab.broadcastutilities.nl/broadcastutilities/radio/bash-functions/-/raw/main/common-functions.sh?ref_type=heads; then
-  echo -e "*** Failed to download functions library. Please check your network connection! ***"
-  exit 1
-fi
-
-# Source the functions library
-source /tmp/functions.sh
-
-# Display a fancy banner for the sysadmin
 cat << "EOF"
 
    ___  ___  ____  ___   ___  ________   __________
@@ -31,47 +55,60 @@ cat << "EOF"
  ****************************************
 EOF
 
-# Configure the environment
+echo -e "${GREEN}Welcome to the Icecast2 installation script!${NC}"
+
+# ========================================================
+# Download & Load Functions Library
+# ========================================================
+download_file "${FUNCTIONS_LIB_URL}" "${FUNCTIONS_LIB_PATH}"
+source "${FUNCTIONS_LIB_PATH}"
+
+# ========================================================
+# Configure Environment
+# ========================================================
 set_colors
 check_user_privileges privileged
 is_this_linux
 is_this_os_64bit
-set_timezone Europe/Amsterdam
+set_timezone "${TIMEZONE}"
 
-# Collect user inputs
-ask_user "HOSTNAMES" "localhost" "Specify the host name(s) (e.g., icecast.example.com) separated by a space (enter without http:// or www) please" "str"
+# ========================================================
+# Collect User Inputs
+# ========================================================
+ask_user "HOSTNAMES" "localhost" "Specify the host name(s) (e.g., icecast.example.com) separated by a space" "str"
 ask_user "SOURCEPASS" "hackme" "Specify the source and relay password" "str"
 ask_user "ADMINPASS" "hackme" "Specify the admin password" "str"
-ask_user "LOCATED" "Earth" "Where is this server located (visible on admin pages)?" "str"
-ask_user "ADMINMAIL" "root@localhost.local" "What's the admin's e-mail (visible on admin pages and for Let's Encrypt)?" "email"
+ask_user "LOCATED" "Earth" "Where is this server located?" "str"
+ask_user "ADMINMAIL" "root@localhost.local" "What's the admin's email?" "email"
 ask_user "PORT" "8000" "Specify the port" "num"
 
-
-# Sanitize the entered hostname(s)
+# ========================================================
+# Process & Sanitize Hostnames
+# ========================================================
 HOSTNAMES=$(echo "$HOSTNAMES" | xargs)
 IFS=' ' read -r -a HOSTNAMES_ARRAY <<< "$HOSTNAMES"
 sanitized_domains=()
 for domain in "${HOSTNAMES_ARRAY[@]}"; do
-  sanitized_domain=$(echo "$domain" | tr -d '[:space:]')
-  sanitized_domains+=("$sanitized_domain")
+  sanitized_domains+=("$(echo "$domain" | tr -d '[:space:]')")
 done
-
-# Order the entered hostname(s)
 HOSTNAMES_ARRAY=("${sanitized_domains[@]}")
 PRIMARY_HOSTNAME="${HOSTNAMES_ARRAY[0]}"
 
-# Build the domain flags for Certbot as an array
+# Build domain flags for Certbot
 DOMAINS_FLAGS=()
 for domain in "${HOSTNAMES_ARRAY[@]}"; do
   DOMAINS_FLAGS+=( -d "$domain" )
 done
 
-# Update the OS and install necessary packages
+# ========================================================
+# Update OS & Install Required Packages
+# ========================================================
 update_os silent
 install_packages silent icecast2 certbot
 
-# Generate the initial icecast.xml configuration
-ICECAST_XML="/etc/icecast2/icecast.xml"
+# ========================================================
+# Generate Icecast Configuration
+# ========================================================
 cat <<EOF > "$ICECAST_XML"
 <icecast>
   <location>$LOCATED</location>
@@ -115,11 +152,16 @@ cat <<EOF > "$ICECAST_XML"
 </icecast>
 EOF
 
-# Set capabilities so that Icecast can listen on ports 80/443
+# ========================================================
+# Set Capabilities for Port 80/443 & Restart Icecast
+# ========================================================
 setcap CAP_NET_BIND_SERVICE=+eip /usr/bin/icecast2
-
-# Reload and restart the Icecast service
 systemctl enable icecast2
 systemctl daemon-reload
 systemctl restart icecast2
 
+# ========================================================
+# Cleanup & Secure Credentials
+# ========================================================
+unset GITLAB_USER GITLAB_TOKEN
+echo -e "${GREEN}Installation completed successfully for ${PRIMARY_HOSTNAME}!${NC}"

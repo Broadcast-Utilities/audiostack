@@ -1,149 +1,42 @@
 #!/usr/bin/env bash
 
-# Load the functions library
+# Exit script immediately on error
+set -e
+
+# ========================================================
+# Prompt for GitLab Credentials
+# ========================================================
+echo -e "${BLUE}Please enter your GitLab credentials:${NC}"
+ask_user "GITLAB_USER" "" "GitLab Username" "str"
+ask_user "GITLAB_TOKEN" "" "GitLab Personal Access Token (PAT)" "str"
+
+# ========================================================
+# Function to Download Files with Authentication
+# ========================================================
+download_file() {
+  local url="$1"
+  local dest="$2"
+  
+  echo -e "${BLUE}Downloading: ${url} -> ${dest}${NC}"
+  
+  if ! curl -sLo "${dest}" --user "${GITLAB_USER}:${GITLAB_TOKEN}" "${url}"; then
+    echo -e "${RED}Error: Unable to download ${url}.${NC}"
+    exit 1
+  fi
+}
+
+# ========================================================
+# Example Usage
+# ========================================================
+
+# Define paths
 FUNCTIONS_LIB_PATH="/tmp/functions.sh"
 FUNCTIONS_LIB_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/bash-functions/-/raw/main/common-functions.sh?ref_type=heads"
 
-# Download the latest version of the functions library
-rm -f "${FUNCTIONS_LIB_PATH}"
-if ! curl -sLo "${FUNCTIONS_LIB_PATH}" "${FUNCTIONS_LIB_URL}"; then
-  echo -e "*** Failed to download the functions library. Please check your network connection! ***"
-  exit 1
-fi
+# Download the functions library
+download_file "${FUNCTIONS_LIB_URL}" "${FUNCTIONS_LIB_PATH}"
 
 # Source the functions library
-# shellcheck source=/tmp/functions.sh
 source "${FUNCTIONS_LIB_PATH}"
 
-# Define base variables
-INSTALL_DIR="/opt/liquidsoap"
-GITHUB_BASE="https://raw.githubusercontent.com/broadcast-utilities/audiostack/main"
-
-# Docker files
-DOCKER_COMPOSE_URL="${GITHUB_BASE}/docker-compose.yml"
-DOCKER_COMPOSE_PATH="${INSTALL_DIR}/docker-compose.yml"
-
-# Liquidsoap configuration
-LIQUIDSOAP_CONFIG_URL_BREEZE="${GITHUB_BASE}/conf/breeze.liq"
-LIQUIDSOAP_CONFIG_PATH="${INSTALL_DIR}/scripts/radio.liq"
-
-
-AUDIO_FALLBACK_PATH="${INSTALL_DIR}/audio/fallback.mp3"
-
-# General configuration
-TIMEZONE="Europe/Amsterdam"
-DIRECTORIES=(
-  "${INSTALL_DIR}/scripts"
-  "${INSTALL_DIR}/audio"
-  "${INSTALL_DIR}/metadata"
-)
-OS_ARCH=$(dpkg --print-architecture)
-
-# Environment setup
-set_colors
-check_user_privileges privileged
-is_this_linux
-is_this_os_64bit
-set_timezone "${TIMEZONE}"
-
-# Ensure Docker is installed
-require_tool "docker"
-
-# Display a welcome banner
-clear
-# Display a fancy banner for the sysadmin
-cat << "EOF"
-
-   ___  ___  ____  ___   ___  ________   __________
-  / _ )/ _ \/ __ \/ _ | / _ \/ ___/ _ | / __/_  __/
- / _  / , _/ /_/ / __ |/ // / /__/ __ |_\ \  / /   
-/____/_/|_|\____/_/_|_/____/\___/_/_|_/___/_/_/    
- / / / /_  __/  _/ /  /  _/_  __/  _/ __/ __/      
-/ /_/ / / / _/ // /___/ /  / / _/ // _/_\ \        
-\____/ /_/ /___/____/___/ /_/ /___/___/___/        
-                                                   
- ****************************************
- *    Liquidsoap Installation Script    *
- *        A part of AudioStack          *  
- *  Made with ♥ by Broadcast Utilities  *
- *                V1.0.0                *
- ****************************************
-EOF
-echo -e "${GREEN}Welcome to the Liquidsoap installation script!${NC}"
-
-
-# Prompt user for input
-ask_user "STATION_CONFIG" "breeze" "Which station configuration would you like to use? (Breeze is the only option (at this moment))" "str"
-
-
-ask_user "ICECAST_HOSTNAME" "icecast.broadcastutilities.nl" "Specify the Icecast hostname (e.g., icecast.example.com) (enter without http:// or www)" "str"
-ask_user "ICECAST_PORT" "8000" "Specify the Icecast port (default is 8000)" "num"
-ask_user "ICECAST_SOURCEPASS" "hackme" "Specify the Icecast source password (default is 'hackme')" "str"
-ask_user "SRT_UPSTREAM_PASS" "hackme" "Specify the SRT upstream password (default is 'hackme')" "str"
-ask_user "AUDIO_FALLBACK_URL" "https://audio.broadcastutilities.nl/noodband.mp3" "Specify the URL for the fallback audio file (default is a sample file)" "str"
-
-
-# Validate station configuration
-ask_user "DO_UPDATES" "y" "Would you like to perform all OS updates? (y/n)" "y/n"
-
-if [ "${DO_UPDATES}" == "y" ]; then
-  update_os silent
-else
-  echo -e "${YELLOW}Skipping OS updates.${NC}"
-fi
-
-# Create required directories
-echo -e "${BLUE}►► Creating directories...${NC}"
-for dir in "${DIRECTORIES[@]}"; do
-  mkdir -p "${dir}"
-done
-
-# Backup and download configuration files
-echo -e "${BLUE}►► Downloading configuration files...${NC}"
-
-# Set configuration URL based on user choice
-if [ "${STATION_CONFIG}" == "breeze" ]; then
-  LIQUIDSOAP_CONFIG_URL="${LIQUIDSOAP_CONFIG_URL_BREEZE}"
-else
-  echo -e "${RED}Error: Invalid station configuration. Must be 'breeze'.${NC}"
-  exit 1
-fi
-
-backup_file "${LIQUIDSOAP_CONFIG_PATH}"
-if ! curl -sLo "${LIQUIDSOAP_CONFIG_PATH}" "${LIQUIDSOAP_CONFIG_URL}"; then
-  echo -e "${RED}Error: Unable to download the Liquidsoap configuration file.${NC}"
-  exit 1
-fi
-
-# Update the Liquidsoap configuration with user inputs
-sed -i "s|icecast.broadcastutilities.nl|${ICECAST_HOSTNAME}|g" "${LIQUIDSOAP_CONFIG_PATH}"
-sed -i "s|80|${ICECAST_PORT}|g" "${LIQUIDSOAP_CONFIG_PATH}"
-sed -i "s|hackme|${ICECAST_SOURCEPASS}|g" "${LIQUIDSOAP_CONFIG_PATH}"
-sed -i "s|foxtrot-uniform-charlie-kilo|${SRT_UPSTREAM_PASS}|g" "${LIQUIDSOAP_CONFIG_PATH}"
-
-
-
-backup_file "${DOCKER_COMPOSE_PATH}"
-if ! curl -sLo "${DOCKER_COMPOSE_PATH}" "${DOCKER_COMPOSE_URL}"; then
-  echo -e "${RED}Error: Unable to download docker-compose.yml.${NC}"
-  exit 1
-fi
-docker-compose -f "${DOCKER_COMPOSE_PATH}" pull
-docker-compose -f "${DOCKER_COMPOSE_PATH}" up -d
-
-
-
-backup_file "${AUDIO_FALLBACK_PATH}"
-if ! curl -sLo "${AUDIO_FALLBACK_PATH}" "${AUDIO_FALLBACK_URL}"; then
-  echo -e "${RED}Error: Unable to download the audio fallback file.${NC}"
-  exit 1
-fi
-
-
-
-
-# Adjust ownership for the directories
-echo -e "${BLUE}►► Setting ownership for ${INSTALL_DIR}...${NC}"
-chown -R 10000:10001 "${INSTALL_DIR}"
-
-echo -e "${GREEN}Installation completed successfully for ${STATION_CONFIG} configuration!${NC}"
+echo -e "${GREEN}Download and authentication successful!${NC}"
