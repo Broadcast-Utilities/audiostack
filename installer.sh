@@ -322,7 +322,7 @@ output_icecast_stream(
 EOF
 
 # ...existing code...
-dos2unix "${CONFIG_DIR}/$CONFIGNAME.liq"
+sed -i '1s/^\xEF\xBB\xBF//' "${CONFIG_DIR}/$CONFIGNAME.liq"
 # ...existing code...
 
 echo -e "${BLUE}Downloading emergency audio file from ${EMERGENCY_AUDIO_URL}${NC}"
