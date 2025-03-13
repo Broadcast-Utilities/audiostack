@@ -87,6 +87,7 @@ ask_user "ADMINMAIL" "root@localhost.local" "What's the admin's email?" "email"
 
 echo -e "${BOLD}Next, we must set some security settings.${NC}"
 ask_user "SOURCEPASS" "" "Specify the source and relay password" "str"
+ask_user "ADMINUSER" "" "Specify the admin username" "str"
 ask_user "ADMINPASS" "" "Specify the admin password" "str"
 
 echo -e "${BOLD}Finally, we need to set limits.${NC}"
@@ -125,15 +126,15 @@ cat <<EOF > "$ICECAST_XML"
   <hostname>$HOSTNAME</hostname>
 
   <limits>
-    <clients>8000</clients>
-    <sources>25</sources>
-    <burst-size>265536</burst-size>
+    <clients>$CLIENTS_LIMIT</clients>
+    <sources>$SOURCES_LIMIT</sources>
+    <burst-size>$BURST_SIZE</burst-size>
   </limits>
 
   <authentication>
     <source-password>$SOURCEPASS</source-password>
     <relay-password>$SOURCEPASS</relay-password>
-    <admin-user>admin</admin-user>
+    <admin-user>$ADMINUSER</admin-user>
     <admin-password>$ADMINPASS</admin-password>
   </authentication>
 
