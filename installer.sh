@@ -22,7 +22,6 @@ ask_user "GITLAB_TOKEN" "" "GitLab Personal Access Token (PAT)" "str"
 FUNCTIONS_LIB_PATH="/tmp/functions.sh"
 FUNCTIONS_LIB_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/bash-functions/-/raw/main/common-functions.sh"
 GITLAB_BASE_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/audiostack/-/raw/main"
-ICECAST_XML="/etc/icecast2/icecast.xml"
 
 # ========================================================
 # Function to Download Files with Authentication
@@ -80,6 +79,7 @@ echo -e "${BOLD}Starting with the web-server settings.${NC}"
 ask_user "TIMEZONE" "$(cat /etc/timezone)" "Specify the timezone (e.g., Europe/Amsterdam)" "str"
 ask_user "HOSTNAME" "localhost" "Specify the host name (e.g., icecast.example.com)" "str"
 ask_user "PORT" "8000" "Specify the port" "num"
+ask_user "CONFIGNAME" "default" "Specify the configuration/container name(s)" "str"
 
 echo -e "${BOLD}Next, we need to set some contact/location info.${NC}"
 ask_user "LOCATED" "Earth" "Where is this server located?" "str"
