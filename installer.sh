@@ -352,7 +352,7 @@ output_icecast_stream(
   format=%mp3(bitrate = 192, samplerate = 48000, internal_quality = 0),
   description=
     "Hoge Kwaliteit Stream (192kbit MP3)",
-  mount="/radiorucphen.mp3",
+  mount="/$STATION_NAME.mp3",
   source=audio_to_icecast
 )
 
@@ -370,7 +370,7 @@ output_icecast_stream(
     ),
   description=
     "Mobile Stream (96kbit AAC)",
-  mount="/radiorucphen.aac",
+  mount="/$STATION_NAME.aac",
   source=audio_to_icecast
 )
 
