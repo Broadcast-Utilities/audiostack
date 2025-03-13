@@ -99,6 +99,12 @@ ask_user "CLIENTS_LIMIT" "8000" "Specify the maximum number of clients (default:
 ask_user "SOURCES_LIMIT" "25" "Specify the maximum number of sources (default: 25)" "num"
 ask_user "BURST_SIZE" "265536" "Specify the burst size (default: 265536)" "num"
 
+echo -e "${BOLD}Now, we need to configure Liquidsoap:${NC}"
+ask_user "INPUT_1_PASS" "" "Specify the input password for Liquidsoap" "str"
+ask_user "INPUT_2_PASS" "" "Specify the input password for Liquidsoap" "str"
+
+
+
 # ========================================================
 # Validate User Inputs
 # ========================================================
