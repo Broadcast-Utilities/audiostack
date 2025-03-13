@@ -57,7 +57,7 @@ set_colors
 check_user_privileges privileged
 is_this_linux
 is_this_os_64bit
-set_timezone "${TIMEZONE}"
+
 
 require_tool "docker"
 require_tool "docker-compose"
