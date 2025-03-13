@@ -75,39 +75,48 @@ set_timezone "${TIMEZONE}"
 # ========================================================
 # Collect User Inputs
 # ========================================================
-echo
-echo -e "${BLUE}Please provide the following information:${NC}"
+echo -e "${BOLD}We will now collect some information to configure Icecast.${NC}"
+echo -e "${BOLD}Starting with the web-server settings.${NC}"
 ask_user "TIMEZONE" "$(cat /etc/timezone)" "Specify the timezone (e.g., Europe/Amsterdam)" "str"
-ask_user "HOSTNAMES" "localhost" "Specify the host name(s) (e.g., icecast.example.com) separated by a space" "str"
-ask_user "SOURCEPASS" "hackme" "Specify the source and relay password" "str"
-ask_user "ADMINPASS" "hackme" "Specify the admin password" "str"
-ask_user "LOCATED" "Earth" "Where is this server located?" "str"
-ask_user "ADMINMAIL" "root@localhost.local" "What's the admin's email?" "email"
+ask_user "HOSTNAME" "localhost" "Specify the host name (e.g., icecast.example.com)" "str"
 ask_user "PORT" "8000" "Specify the port" "num"
 
-# ========================================================
-# Process & Sanitize Hostnames
-# ========================================================
-HOSTNAMES=$(echo "$HOSTNAMES" | xargs)
-IFS=' ' read -r -a HOSTNAMES_ARRAY <<< "$HOSTNAMES"
-sanitized_domains=()
-for domain in "${HOSTNAMES_ARRAY[@]}"; do
-  sanitized_domains+=("$(echo "$domain" | tr -d '[:space:]')")
-done
-HOSTNAMES_ARRAY=("${sanitized_domains[@]}")
-PRIMARY_HOSTNAME="${HOSTNAMES_ARRAY[0]}"
+echo -e "${BOLD}Next, we need to set some contact/location info.${NC}"
+ask_user "LOCATED" "Earth" "Where is this server located?" "str"
+ask_user "ADMINMAIL" "root@localhost.local" "What's the admin's email?" "email"
 
-# Build domain flags for Certbot
-DOMAINS_FLAGS=()
-for domain in "${HOSTNAMES_ARRAY[@]}"; do
-  DOMAINS_FLAGS+=( -d "$domain" )
-done
+echo -e "${BOLD}Next, we must set some security settings.${NC}"
+ask_user "SOURCEPASS" "" "Specify the source and relay password" "str"
+ask_user "ADMINPASS" "" "Specify the admin password" "str"
+
+echo -e "${BOLD}Finally, we need to set limits.${NC}"
+ask_user "CLIENTS_LIMIT" "8000" "Specify the maximum number of clients (default: 8000)" "num"
+ask_user "SOURCES_LIMIT" "25" "Specify the maximum number of sources (default: 25)" "num"
+ask_user "BURST_SIZE" "265536" "Specify the burst size (default: 265536)" "num"
 
 # ========================================================
-# Update OS & Install Required Packages
+# Validate User Inputs
 # ========================================================
+validate_inputs() {
+
+  if [[ $CLIENTS_LIMIT -le 0 || $CLIENTS_LIMIT -gt 10000 ]]; then
+    echo -e "${RED}Error: CLIENTS_LIMIT must be between 1 and 10000.${NC}"
+    exit 1
+  fi
+  if [[ $SOURCES_LIMIT -le 0 || $SOURCES_LIMIT -gt 100 ]]; then
+    echo -e "${RED}Error: SOURCES_LIMIT must be between 1 and 100.${NC}"
+    exit 1
+  fi
+  if [[ $BURST_SIZE -le 0 ]]; then
+    echo -e "${RED}Error: BURST_SIZE must be greater than 0.${NC}"
+    exit 1
+  fi
+}
+
+validate_inputs
+
 update_os silent
-install_packages silent icecast2 certbot
+install_packages silent icecast2
 
 # ========================================================
 # Generate Icecast Configuration
@@ -116,7 +125,7 @@ cat <<EOF > "$ICECAST_XML"
 <icecast>
   <location>$LOCATED</location>
   <admin>$ADMINMAIL</admin>
-  <hostname>$PRIMARY_HOSTNAME</hostname>
+  <hostname>$HOSTNAME</hostname>
 
   <limits>
     <clients>8000</clients>
