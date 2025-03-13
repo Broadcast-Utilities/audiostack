@@ -48,10 +48,9 @@ cat << "EOF"
 \____/ /_/ /___/____/___/ /_/ /___/___/___/        
                                                    
  ****************************************
- *     Icecast2 Installation Script     *
- *        A part of AudioStack          *  
+ *              AudioStack              *  
  *  Made with ♥ by Broadcast Utilities  *
- *                V1.0.0                *
+ *                V2.0.0                *
  ****************************************
 EOF
 
