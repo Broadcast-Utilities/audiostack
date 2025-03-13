@@ -8,6 +8,14 @@ set -e
 # ========================================================
 FUNCTIONS_LIB_PATH="/tmp/functions.sh"
 CONFIG_DIR="/etc/audiostack"
+FUNCTIONS_LIB_URL="https://gitlab.broadcastutilities.nl/api/v4/projects/4/repository/files/common-functions.sh/raw?ref=main"
+
+# Define colors first for use in the download function
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+BOLD='\033[1m'
+NC='\033[0m' # No Color
 
 # ========================================================
 # Download & Load Functions Library
@@ -17,14 +25,12 @@ download_file() {
   local dest="$2"
 
   echo -e "${BLUE}Downloading: ${url} -> ${dest}${NC}"
-  curl -sLo $FUNCTIONS_LIB_PATH --header "PRIVATE-TOKEN: glpat-s6joFZTq8adhvwUx5Rcz" "https://gitlab.broadcastutilities.nl/api/v4/projects/4/repository/files/common-functions.sh/raw?ref=main"
+  curl -sLo "${dest}" --header "PRIVATE-TOKEN: glpat-s6joFZTq8adhvwUx5Rcz" "${url}"
 }
 
 download_file "${FUNCTIONS_LIB_URL}" "${FUNCTIONS_LIB_PATH}"
 
 source "${FUNCTIONS_LIB_PATH}"
-
-
 
 # ========================================================
 # Clear Terminal & Display Welcome Banner
@@ -37,7 +43,7 @@ cat << "EOF"
  / _  / , _/ /_/ / __ |/ // / /__/ __ |_\ \  / /   
 /____/_/|_|\____/_/_|_/____/\___/_/_|_/___/_/_/    
  / / / /_  __/  _/ /  /  _/_  __/  _/ __/ __/      
-/ /_/ / / / _/ // /___/ /  / / _/ // _/_\ \        
+/ /_/ / / / _/ // /___/ /  / / / _/ // _/_\ \        
 \____/ /_/ /___/____/___/ /_/ /___/___/___/        
                                                    
  ****************************************
@@ -57,7 +63,6 @@ set_colors
 check_user_privileges privileged
 is_this_linux
 is_this_os_64bit
-
 
 require_tool "docker"
 require_tool "docker-compose"
@@ -88,9 +93,9 @@ ask_user "BURST_SIZE" "265536" "Specify the burst size (default: 265536)" "num"
 
 echo -e "${BOLD}Now, we need to configure Liquidsoap:${NC}"
 ask_user "INPUT_1_PASS" "" "Specify the input password for Liquidsoap" "str"
-ask_user "INPUT_1_PORT" "localhost" "Specify the input host for Liquidsoap" "str"
-ask_user "INPUT_2_PASS" "" "Specify the input password for Liquidsoap" "str"
-ask_user "INPUT_2_PORT" "localhost" "Specify the input host for Liquidsoap" "str"
+ask_user "INPUT_1_PORT" "8010" "Specify the input port for Liquidsoap" "num"
+ask_user "INPUT_2_PASS" "" "Specify the backup input password for Liquidsoap" "str"
+ask_user "INPUT_2_PORT" "8020" "Specify the backup input port for Liquidsoap" "num"
 ask_user "STATION_NAME" "My Station" "Specify the station name" "str"
 ask_user "STATION_URL" "https://example.com" "Specify the station URL" "str"
 ask_user "STATION_GENRE" "Various" "Specify the station genre" "str"
@@ -118,8 +123,10 @@ validate_inputs() {
 validate_inputs
 
 mkdir -p "${CONFIG_DIR}"
-
-
+mkdir -p "${CONFIG_DIR}/$CONFIGNAME/web"
+mkdir -p "${CONFIG_DIR}/$CONFIGNAME/admin"
+mkdir -p "${CONFIG_DIR}/$CONFIGNAME/log"
+mkdir -p "${CONFIG_DIR}/$CONFIGNAME/share"
 
 # ========================================================
 # Generate Icecast Configuration
@@ -180,8 +187,7 @@ docker run -d \
 sleep 5
 
 cat <<EOF > "${CONFIG_DIR}/$CONFIGNAME.liq"
-
-# Streaming configuration (do change this)
+# Streaming configuration
 icecastserver = "$HOSTNAME"
 icecastport = $PORT
 icecastpassword = "$SOURCEPASS"
@@ -196,14 +202,14 @@ def log_event(input_name, event) =
 end
 
 # Backup file to be played when no audio is coming from the studio
-noodband = source.drop.metadata(id="noodband", single(fallbackfile))
+noodband = single(fallbackfile)
 
 # Input for primary studio stream
 studio_a =
   input.harbor(
     "/",
     port=$INPUT_1_PORT,
-    password="$INPUT_1_PASS",
+    password="$INPUT_1_PASS"
   )
 
 # Input for backup studio stream
@@ -211,7 +217,7 @@ studio_b =
   input.harbor(
     "/",
     port=$INPUT_2_PORT,
-    password="$INPUT_2_PASS",
+    password="$INPUT_2_PASS"
   )
 
 # Log silence detection and resumption
@@ -269,28 +275,12 @@ radio =
     id="radio_prod", track_sensitive=false, [studio_a, studio_b, noodband]
   )
 
-##############################################################################
-#                             WARNING                                        #
-#                       OUTPUTTING TO MULTIPLE                               #
-#                          ICECAST SERVERS                                   #
-#                                                                            #
-# When outputting to multiple distinct Icecast servers, be aware that the    #
-# instability of one server will affect all other streams. To ensure         #
-# stability, each Icecast server output requires its own clock.              #
-#                                                                            #
-##############################################################################
+# Process the radio stream
+radioproc = radio
 
 # Create a clock for output to Icecast
 audio_to_icecast = mksafe(buffer(radioproc))
 clock.assign_new(id="icecast_clock", [audio_to_icecast])
-
-# Create a clock for output to Dutch Media Exchange
-audio_to_dme = mksafe(buffer(radioproc))
-clock.assign_new(id="dme_clock", [audio_to_dme])
-
-# Create a clock for output to Radio Netwerk Nederland
-audio_to_rnn = mksafe(buffer(radioproc))
-clock.assign_new(id="rnn_clock", [audio_to_rnn])
 
 # Function to output an icecast stream with common parameters
 def output_icecast_stream(~format, ~description, ~mount, ~source) =
@@ -335,13 +325,14 @@ output_icecast_stream(
 )
 EOF
 
-curl -i $EMERGENCY_AUDIO_URL -o ${CONFIG_DIR}/$CONFIGNAME.wav
+echo -e "${BLUE}Downloading emergency audio file from ${EMERGENCY_AUDIO_URL}${NC}"
+curl -sL "$EMERGENCY_AUDIO_URL" -o "${CONFIG_DIR}/$CONFIGNAME.wav"
 if [ $? -ne 0 ]; then
     echo -e "${RED}Error: Failed to download emergency audio file.${NC}"
     exit 1
 fi
-chmod 644 ${CONFIG_DIR}/$CONFIGNAME.wav
-chown -R 1000:1000 ${CONFIG_DIR}/$CONFIGNAME.wav
+chmod 644 "${CONFIG_DIR}/$CONFIGNAME.wav"
+chown -R 1000:1000 "${CONFIG_DIR}/$CONFIGNAME.wav"
 
 docker run -d \
     -p $INPUT_1_PORT:$INPUT_1_PORT \
@@ -358,3 +349,5 @@ docker run -d \
 # ========================================================
 unset GITLAB_USER GITLAB_TOKEN
 echo -e "${GREEN}Installation completed successfully for ${HOSTNAME}!${NC}"
+echo -e "${GREEN}Icecast is now running at http://${HOSTNAME}:${PORT}${NC}"
+echo -e "${GREEN}Liquidsoap is running with inputs on ports ${INPUT_1_PORT} and ${INPUT_2_PORT}${NC}"
