@@ -127,6 +127,8 @@ mkdir -p "${CONFIG_DIR}/$CONFIGNAME/web"
 mkdir -p "${CONFIG_DIR}/$CONFIGNAME/admin"
 mkdir -p "${CONFIG_DIR}/$CONFIGNAME/log"
 mkdir -p "${CONFIG_DIR}/$CONFIGNAME/share"
+# Set proper permissions for docker volumes
+chmod -R 755 "${CONFIG_DIR}/${CONFIGNAME}"
 
 # ========================================================
 # Generate Icecast Configuration
