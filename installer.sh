@@ -22,6 +22,7 @@ ask_user "GITLAB_TOKEN" "" "GitLab Personal Access Token (PAT)" "str"
 FUNCTIONS_LIB_PATH="/tmp/functions.sh"
 FUNCTIONS_LIB_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/bash-functions/-/raw/main/common-functions.sh"
 GITLAB_BASE_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/audiostack/-/raw/main"
+CONFIG_DIR="/etc/audiostack"
 
 # ========================================================
 # Function to Download Files with Authentication
@@ -119,7 +120,7 @@ validate_inputs
 # ========================================================
 # Generate Icecast Configuration
 # ========================================================
-cat <<EOF > "$ICECAST_XML"
+cat <<EOF > "${CONFIG_DIR}/$ICECAST_XML"
 <icecast>
   <location>$LOCATED</location>
   <admin>$ADMINMAIL</admin>
@@ -162,13 +163,7 @@ cat <<EOF > "$ICECAST_XML"
 </icecast>
 EOF
 
-# ========================================================
-# Set Capabilities for Port 80/443 & Restart Icecast
-# ========================================================
-setcap CAP_NET_BIND_SERVICE=+eip /usr/bin/icecast2
-systemctl enable icecast2
-systemctl daemon-reload
-systemctl restart icecast2
+
 
 # ========================================================
 # Cleanup & Secure Credentials
