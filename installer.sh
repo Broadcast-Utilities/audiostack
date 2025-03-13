@@ -164,7 +164,7 @@ cat <<EOF > "${CONFIG_DIR}/$ICECAST_XML"
   </authentication>
 
   <listen-socket>
-    <port>$PORT</port>
+    <port>8000</port>
   </listen-socket>
 
   <http-headers>
@@ -187,6 +187,12 @@ cat <<EOF > "${CONFIG_DIR}/$ICECAST_XML"
 </icecast>
 EOF
 
+
+
+docker run -d \
+    -p $PORT:8000 \
+    -v ./icecast.xml:/etc/icecast.xml \
+    libretime/icecast:2.4.4
 
 
 # ========================================================
