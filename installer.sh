@@ -118,8 +118,7 @@ validate_inputs() {
 validate_inputs
 
 mkdir -p "${CONFIG_DIR}"
-mkfile "${CONFIG_DIR}/$CONFIGNAME.xml"
-mkfile "${CONFIG_DIR}/$CONFIGNAME.liq"
+
 
 
 # ========================================================
@@ -175,13 +174,6 @@ docker run -d \
     libretime/icecast:2.4.4
 
 sleep 5
-
-if curl -s --head http://localhost:$PORT | grep "200 OK" > /dev/null; then
-    echo -e "${GREEN}Icecast is running successfully!${NC}"
-else
-    echo -e "${RED}Failed to start Icecast.${NC}"
-    exit 1
-fi
 
 cat <<EOF > "${CONFIG_DIR}/$CONFIGNAME.liq"
 
