@@ -191,8 +191,20 @@ EOF
 
 docker run -d \
     -p $PORT:8000 \
-    -v ./icecast.xml:/etc/icecast.xml \
+    -v ${CONFIG_DIR}/$ICECAST_XML:/etc/icecast.xml \
     libretime/icecast:2.4.4
+
+
+sleep 5
+
+
+if curl -s --head  http://localhost:$PORT | grep "200 OK" > /dev/null; then
+    echo -e "${GREEN}Icecast is running successfully!${NC}"
+else
+    echo -e "${RED}Failed to start Icecast.${NC}"
+    exit 1
+fi
+
 
 
 # ========================================================
