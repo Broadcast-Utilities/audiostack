@@ -101,7 +101,22 @@ ask_user "BURST_SIZE" "265536" "Specify the burst size (default: 265536)" "num"
 
 echo -e "${BOLD}Now, we need to configure Liquidsoap:${NC}"
 ask_user "INPUT_1_PASS" "" "Specify the input password for Liquidsoap" "str"
+ask_user "INPUT_1_PORT" "localhost" "Specify the input host for Liquidsoap" "str"
 ask_user "INPUT_2_PASS" "" "Specify the input password for Liquidsoap" "str"
+ask_user "INPUT_2_PORT" "localhost" "Specify the input host for Liquidsoap" "str"
+ask_user "STATION_NAME" "My Station" "Specify the station name" "str"
+ask_user "STATION_URL" "https://example.com" "Specify the station URL" "str"
+ask_user "STATION_GENRE" "Various" "Specify the station genre" "str"
+ask_user "STATION_DESC" "My Station Description" "Specify the station description" "str"
+ask_user "STREAM_1_NAME" "My Stream" "Specify the stream name" "str"
+ask_user "STREAM_1_DESC" "My Stream Description" "Specify the stream description" "str"
+ask_user "STREAM_1_BITRATE" "128" "Specify the first stream bitrate (default: 128)" "num"
+ask_user "STREAM_1_CODEC" "AAC" "Specify the first stream codec (Options: AAC, MP3, FLAC)" "str"
+ask_user "STREAM_2_NAME" "My Stream 2" "Specify the second stream name" "str"
+ask_user "STREAM_2_DESC" "My Stream 2 Description" "Specify the second stream description" "str"
+ask_user "STREAM_2_BITRATE" "128" "Specify the second stream bitrate (default: 128)" "num"
+ask_user "STREAM_2_CODEC" "AAC" "Specify the second stream codec (Options: AAC, MP3, FLAC)" "str"
+
 
 
 
