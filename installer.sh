@@ -21,7 +21,7 @@ download_file() {
 }
 
 download_file "${FUNCTIONS_LIB_URL}" "${FUNCTIONS_LIB_PATH}"
-source "${FUNCTIONS_LIB_PATH}"
+
 
 # ========================================================
 # Prompt for GitLab Credentials
