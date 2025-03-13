@@ -196,7 +196,7 @@ settings.frame.audio.samplerate := 48000
 # Streaming configuration (do change this)
 icecastserver = "$HOSTNAME"
 icecastport = $PORT
-icecastpassword = "hackme"
+icecastpassword = "$SOURCEPASS"
 fallbackfile = "/audio/fallback.wav"
 
 # Logging function for various events
