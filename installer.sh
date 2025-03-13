@@ -321,6 +321,10 @@ output_icecast_stream(
 )
 EOF
 
+# ...existing code...
+dos2unix "${CONFIG_DIR}/$CONFIGNAME.liq"
+# ...existing code...
+
 echo -e "${BLUE}Downloading emergency audio file from ${EMERGENCY_AUDIO_URL}${NC}"
 curl -sL "$EMERGENCY_AUDIO_URL" -o "${CONFIG_DIR}/$CONFIGNAME.wav"
 if [ $? -ne 0 ]; then
