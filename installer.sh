@@ -181,10 +181,6 @@ sleep 5
 
 cat <<EOF > "${CONFIG_DIR}/$CONFIGNAME.liq"
 
-# Audio defaults
-settings.frame.audio.channels := 2
-settings.frame.audio.samplerate := 48000
-
 # Streaming configuration (do change this)
 icecastserver = "$HOSTNAME"
 icecastport = $PORT
