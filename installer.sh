@@ -56,7 +56,7 @@ cat << "EOF"
  ****************************************
 EOF
 
-echo -e "${GREEN}Welcome to the AudioStackinstallation script!${NC}"
+echo -e "${GREEN}Welcome to the AudioStack installation script!${NC}"
 
 # ========================================================
 # Download & Load Functions Library
