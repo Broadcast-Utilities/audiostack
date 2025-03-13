@@ -236,15 +236,15 @@ studio_a =
   input.harbor(
     "/",
     port=$INPUT_1_PORT,
-    password=$INPUT_1_PASS,
+    password="$INPUT_1_PASS",
   )
 
 # Input for backup studio stream
-studio_a =
+studio_b =
   input.harbor(
     "/",
     port=$INPUT_2_PORT,
-    password=$INPUT_2_PASS,
+    password="$INPUT_2_PASS",
   )
 
 
