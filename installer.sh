@@ -337,8 +337,11 @@ def output_icecast_stream(~format, ~description, ~mount, ~source) =
     port=icecastport,
     password=icecastpassword,
     name=
-      "Radio Rucphen",
-    description=description,
+      "$STATION_NAME,
+    description="$STATION_DESC",
+    genre="$STATION_GENRE",
+    url="$STATION_URL",
+    public=true,
     mount=mount,
     source
   )
