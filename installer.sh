@@ -24,12 +24,7 @@ download_file "${FUNCTIONS_LIB_URL}" "${FUNCTIONS_LIB_PATH}"
 
 source "${FUNCTIONS_LIB_PATH}"
 
-# ========================================================
-# Prompt for GitLab Credentials
-# ========================================================
-echo -e "\n${BLUE}Please enter your GitLab credentials to download required files:${NC}"
-ask_user "GITLAB_USER" "" "GitLab Username" "str"
-ask_user "GITLAB_TOKEN" "" "GitLab Personal Access Token (PAT)" "str"
+
 
 # ========================================================
 # Clear Terminal & Display Welcome Banner
