@@ -335,19 +335,19 @@ output_icecast_stream(
 )
 EOF
 
-curl -i $EMERGENCY_AUDIO_URL -o ${CONFIG_DIR}/$CONFIGNAME/fallback.wav
+curl -i $EMERGENCY_AUDIO_URL -o ${CONFIG_DIR}/$CONFIGNAME.wav
 if [ $? -ne 0 ]; then
     echo -e "${RED}Error: Failed to download emergency audio file.${NC}"
     exit 1
 fi
-chmod 644 ${CONFIG_DIR}/$CONFIGNAME/fallback.wav
-chown -R 1000:1000 ${CONFIG_DIR}/$CONFIGNAME/fallback.wav
+chmod 644 ${CONFIG_DIR}/$CONFIGNAME.wav
+chown -R 1000:1000 ${CONFIG_DIR}/$CONFIGNAME.wav
 
 docker run -d \
     -p $INPUT_1_PORT:$INPUT_1_PORT \
     -p $INPUT_2_PORT:$INPUT_2_PORT \
     -v ${CONFIG_DIR}/$CONFIGNAME.liq:/scripts/current.liq \
-    -v ${CONFIG_DIR}/$CONFIGNAME/fallback.wav:/audio/fallback.wav \
+    -v ${CONFIG_DIR}/$CONFIGNAME.wav:/audio/fallback.wav \
     -e TZ=$TIMEZONE \
     --restart unless-stopped \
     --name ${CONFIGNAME}_liquidsoap \
