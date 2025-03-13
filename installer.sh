@@ -14,7 +14,8 @@ ask_user "GITLAB_TOKEN" "" "GitLab Personal Access Token (PAT)" "str"
 # Define Paths & URLs
 # ========================================================
 FUNCTIONS_LIB_PATH="/tmp/functions.sh"
-FUNCTIONS_LIB_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/bash-functions/-/raw/main/common-functions.sh?ref_type=heads"
+FUNCTIONS_LIB_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/bash-functions/-/raw/main/common-functions.sh"
+GITLAB_BASE_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/audiostack/-/raw/main"
 ICECAST_XML="/etc/icecast2/icecast.xml"
 TIMEZONE="Europe/Amsterdam"
 
