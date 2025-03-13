@@ -355,7 +355,7 @@ docker run -d \
     -e TZ=$TIMEZONE \
     --restart unless-stopped \
     --name ${CONFIGNAME}_liquidsoap \
-    savonet/liquidsoap:latest 
+    savonet/liquidsoap
 
 # ========================================================
 # Cleanup & Secure Credentials
