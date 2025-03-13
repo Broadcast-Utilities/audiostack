@@ -214,11 +214,11 @@ settings.frame.audio.channels := 2
 settings.frame.audio.samplerate := 48000
 
 # Streaming configuration (do change this)
-icecastserver = "icecast.zuidwest.cloud"
-icecastport = 80
+icecastserver = "$HOSTNAME"
+icecastport = $PORT
 icecastpassword = "hackme"
-fallbackfile = "/audio/fallback.mp3"
-upstreampassword = "foxtrot-uniform-charlie-kilo"
+fallbackfile = "/audio/fallback.wav"
+
 
 # Logging function for various events
 def log_event(input_name, event) =
