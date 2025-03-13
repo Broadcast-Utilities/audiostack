@@ -117,6 +117,11 @@ validate_inputs() {
 
 validate_inputs
 
+mkdir -p "${CONFIG_DIR}"
+mkfile "${CONFIG_DIR}/$CONFIGNAME.xml"
+mkfile "${CONFIG_DIR}/$CONFIGNAME.liq"
+
+
 # ========================================================
 # Generate Icecast Configuration
 # ========================================================
