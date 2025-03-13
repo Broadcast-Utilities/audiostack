@@ -209,7 +209,9 @@ fi
 docker run -d \
     -p $INPUT_1_PORT:$INPUT_1_PORT \
     -p $INPUT_2_PORT:$INPUT_2_PORT \
+    -v ${CONFIG_DIR}/$CONFIGNAME.liq:/scripts/current.liq \
     -e TZ=$TIMEZONE \
+    -c /scripts/current.liq \
     savonet/liquidsoap:1.4.4
 
 
