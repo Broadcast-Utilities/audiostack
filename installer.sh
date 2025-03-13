@@ -56,7 +56,7 @@ cat << "EOF"
  ****************************************
 EOF
 
-echo -e "${GREEN}Welcome to the Icecast2 installation script!${NC}"
+echo -e "${GREEN}Welcome to the AudioStackinstallation script!${NC}"
 
 # ========================================================
 # Download & Load Functions Library
@@ -76,6 +76,8 @@ set_timezone "${TIMEZONE}"
 # ========================================================
 # Collect User Inputs
 # ========================================================
+echo
+echo -e "${BLUE}Please provide the following information:${NC}"
 ask_user "HOSTNAMES" "localhost" "Specify the host name(s) (e.g., icecast.example.com) separated by a space" "str"
 ask_user "SOURCEPASS" "hackme" "Specify the source and relay password" "str"
 ask_user "ADMINPASS" "hackme" "Specify the admin password" "str"
