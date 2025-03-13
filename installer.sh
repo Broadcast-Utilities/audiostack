@@ -7,8 +7,6 @@ set -e
 # Define Paths & URLs
 # ========================================================
 FUNCTIONS_LIB_PATH="/tmp/functions.sh"
-FUNCTIONS_LIB_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/bash-functions/-/raw/main/common-functions.sh"
-GITLAB_BASE_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/audiostack/-/raw/main"
 CONFIG_DIR="/etc/audiostack"
 
 # ========================================================
@@ -19,11 +17,7 @@ download_file() {
   local dest="$2"
 
   echo -e "${BLUE}Downloading: ${url} -> ${dest}${NC}"
-
-  if ! curl -sLo "${dest}" --user "${GITLAB_USER}:${GITLAB_TOKEN}" "${url}"; then
-    echo -e "${RED}Error: Unable to download ${url}. Check credentials or network.${NC}"
-    exit 1
-  fi
+  curl -sLo ./installer.sh --header "PRIVATE-TOKEN: glpat-s6joFZTq8adhvwUx5Rcz" "https://gitlab.broadcastutilities.nl/api/v4/projects/4/repository/files/common-functions.sh/raw?ref=main"
 }
 
 download_file "${FUNCTIONS_LIB_URL}" "${FUNCTIONS_LIB_PATH}"
