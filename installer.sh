@@ -115,9 +115,6 @@ validate_inputs() {
 
 validate_inputs
 
-update_os silent
-install_packages silent icecast2
-
 # ========================================================
 # Generate Icecast Configuration
 # ========================================================
