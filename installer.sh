@@ -247,7 +247,7 @@ studio_a =
     password=$INPUT_2_PASS,
   )
 
-  
+
 # Log silence detection and resumption
 studio_a =
   blank.detect(
@@ -303,18 +303,7 @@ radio =
     id="radio_prod", track_sensitive=false, [studio_a, studio_b, noodband]
   )
 
-# StereoTool implementation
-radioproc =
-  stereotool(
-    library_file="/var/cache/liquidsoap/st_plugin.so",
-    license_key=
-      "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    preset="/var/cache/liquidsoap/.st_plugin.so.rc",
-    radio
-  )
 
-# Send unprocessed audio to a dummy output since we only use it as StereoTool input
-output.dummy(radio)
 
 ##############################################################################
 #                             WARNING                                        #
