@@ -4,19 +4,6 @@
 set -e
 
 # ========================================================
-# Download & Load Functions Library
-# ========================================================
-download_file "${FUNCTIONS_LIB_URL}" "${FUNCTIONS_LIB_PATH}"
-source "${FUNCTIONS_LIB_PATH}"
-
-# ========================================================
-# Prompt for GitLab Credentials
-# ========================================================
-echo -e "\n${BLUE}Please enter your GitLab credentials to download required files:${NC}"
-ask_user "GITLAB_USER" "" "GitLab Username" "str"
-ask_user "GITLAB_TOKEN" "" "GitLab Personal Access Token (PAT)" "str"
-
-# ========================================================
 # Define Paths & URLs
 # ========================================================
 FUNCTIONS_LIB_PATH="/tmp/functions.sh"
@@ -25,7 +12,7 @@ GITLAB_BASE_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/a
 CONFIG_DIR="/etc/audiostack"
 
 # ========================================================
-# Function to Download Files with Authentication
+# Download & Load Functions Library
 # ========================================================
 download_file() {
   local url="$1"
@@ -38,6 +25,16 @@ download_file() {
     exit 1
   fi
 }
+
+download_file "${FUNCTIONS_LIB_URL}" "${FUNCTIONS_LIB_PATH}"
+source "${FUNCTIONS_LIB_PATH}"
+
+# ========================================================
+# Prompt for GitLab Credentials
+# ========================================================
+echo -e "\n${BLUE}Please enter your GitLab credentials to download required files:${NC}"
+ask_user "GITLAB_USER" "" "GitLab Username" "str"
+ask_user "GITLAB_TOKEN" "" "GitLab Personal Access Token (PAT)" "str"
 
 # ========================================================
 # Clear Terminal & Display Welcome Banner
@@ -109,14 +106,10 @@ ask_user "STATION_URL" "https://example.com" "Specify the station URL" "str"
 ask_user "STATION_GENRE" "Various" "Specify the station genre" "str"
 ask_user "STATION_DESC" "My Station Description" "Specify the station description" "str"
 
-
-
-
 # ========================================================
 # Validate User Inputs
 # ========================================================
 validate_inputs() {
-
   if [[ $CLIENTS_LIMIT -le 0 || $CLIENTS_LIMIT -gt 10000 ]]; then
     echo -e "${RED}Error: CLIENTS_LIMIT must be between 1 and 10000.${NC}"
     exit 1
@@ -179,25 +172,20 @@ cat <<EOF > "${CONFIG_DIR}/$CONFIGNAME.xml"
 </icecast>
 EOF
 
-
-
 docker run -d \
     -p $PORT:8000 \
-    -v ${CONFIG_DIR}/$ICECAST_XML:/etc/icecast.xml \
+    -v ${CONFIG_DIR}/$CONFIGNAME.xml:/etc/icecast.xml \
     --name ${CONFIGNAME}_icecast \
     libretime/icecast:2.4.4
 
-
 sleep 5
 
-
-if curl -s --head  http://localhost:$PORT | grep "200 OK" > /dev/null; then
+if curl -s --head http://localhost:$PORT | grep "200 OK" > /dev/null; then
     echo -e "${GREEN}Icecast is running successfully!${NC}"
 else
     echo -e "${RED}Failed to start Icecast.${NC}"
     exit 1
 fi
-
 
 cat <<EOF > "${CONFIG_DIR}/$CONFIGNAME.liq"
 
@@ -210,7 +198,6 @@ icecastserver = "$HOSTNAME"
 icecastport = $PORT
 icecastpassword = "hackme"
 fallbackfile = "/audio/fallback.wav"
-
 
 # Logging function for various events
 def log_event(input_name, event) =
@@ -238,7 +225,6 @@ studio_b =
     port=$INPUT_2_PORT,
     password="$INPUT_2_PASS",
   )
-
 
 # Log silence detection and resumption
 studio_a =
@@ -295,8 +281,6 @@ radio =
     id="radio_prod", track_sensitive=false, [studio_a, studio_b, noodband]
   )
 
-
-
 ##############################################################################
 #                             WARNING                                        #
 #                       OUTPUTTING TO MULTIPLE                               #
@@ -328,8 +312,7 @@ def output_icecast_stream(~format, ~description, ~mount, ~source) =
     host=icecastserver,
     port=icecastport,
     password=icecastpassword,
-    name=
-      "$STATION_NAME,
+    name="$STATION_NAME",
     description="$STATION_DESC",
     genre="$STATION_GENRE",
     url="$STATION_URL",
@@ -342,30 +325,26 @@ end
 # Output a high bitrate mp3 stream
 output_icecast_stream(
   format=%mp3(bitrate = 192, samplerate = 48000, internal_quality = 0),
-  description=
-    "HQ Stream (192kbit MP3)",
+  description="HQ Stream (192kbit MP3)",
   mount="/$STATION_NAME.mp3",
   source=audio_to_icecast
 )
 
 # Output a low bitrate AAC stream
 output_icecast_stream(
-  format=
-    %fdkaac(
-      channels = 2,
-      samplerate = 48000,
-      bitrate = 96,
-      afterburner = true,
-      aot = 'mpeg4_aac_lc',
-      transmux = 'adts',
-      sbr_mode = true
-    ),
-  description=
-    "Mobile Stream (96kbit AAC)",
+  format=%fdkaac(
+    channels = 2,
+    samplerate = 48000,
+    bitrate = 96,
+    afterburner = true,
+    aot = 'mpeg4_aac_lc',
+    transmux = 'adts',
+    sbr_mode = true
+  ),
+  description="Mobile Stream (96kbit AAC)",
   mount="/$STATION_NAME.aac",
   source=audio_to_icecast
 )
-
 EOF
 
 docker run -d \
@@ -377,11 +356,8 @@ docker run -d \
     --name ${CONFIGNAME}_liquidsoap \
     savonet/liquidsoap:2.3.1
 
-
-
-
 # ========================================================
 # Cleanup & Secure Credentials
 # ========================================================
 unset GITLAB_USER GITLAB_TOKEN
-echo -e "${GREEN}Installation completed successfully for ${PRIMARY_HOSTNAME}!${NC}"
+echo -e "${GREEN}Installation completed successfully for ${HOSTNAME}!${NC}"
