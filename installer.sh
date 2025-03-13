@@ -192,6 +192,7 @@ EOF
 docker run -d \
     -p $PORT:8000 \
     -v ${CONFIG_DIR}/$ICECAST_XML:/etc/icecast.xml \
+    --name ${CONFIGNAME}_icecast \
     libretime/icecast:2.4.4
 
 
@@ -212,6 +213,7 @@ docker run -d \
     -v ${CONFIG_DIR}/$CONFIGNAME.liq:/scripts/current.liq \
     -e TZ=$TIMEZONE \
     --restart unless-stopped \
+    --name ${CONFIGNAME}_liquidsoap \
     savonet/liquidsoap:2.3.1
 
 
