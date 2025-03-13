@@ -4,6 +4,12 @@
 set -e
 
 # ========================================================
+# Download & Load Functions Library
+# ========================================================
+download_file "${FUNCTIONS_LIB_URL}" "${FUNCTIONS_LIB_PATH}"
+source "${FUNCTIONS_LIB_PATH}"
+
+# ========================================================
 # Prompt for GitLab Credentials
 # ========================================================
 echo -e "\n${BLUE}Please enter your GitLab credentials to download required files:${NC}"
@@ -57,12 +63,6 @@ cat << "EOF"
 EOF
 
 echo -e "${GREEN}Welcome to the AudioStack installation script!${NC}"
-
-# ========================================================
-# Download & Load Functions Library
-# ========================================================
-download_file "${FUNCTIONS_LIB_URL}" "${FUNCTIONS_LIB_PATH}"
-source "${FUNCTIONS_LIB_PATH}"
 
 # ========================================================
 # Configure Environment
