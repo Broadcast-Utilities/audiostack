@@ -17,11 +17,12 @@ download_file() {
   local dest="$2"
 
   echo -e "${BLUE}Downloading: ${url} -> ${dest}${NC}"
-  curl -sLo ./installer.sh --header "PRIVATE-TOKEN: glpat-s6joFZTq8adhvwUx5Rcz" "https://gitlab.broadcastutilities.nl/api/v4/projects/4/repository/files/common-functions.sh/raw?ref=main"
+  curl -sLo $FUNCTIONS_LIB_PATH --header "PRIVATE-TOKEN: glpat-s6joFZTq8adhvwUx5Rcz" "https://gitlab.broadcastutilities.nl/api/v4/projects/4/repository/files/common-functions.sh/raw?ref=main"
 }
 
 download_file "${FUNCTIONS_LIB_URL}" "${FUNCTIONS_LIB_PATH}"
 
+source "${FUNCTIONS_LIB_PATH}"
 
 # ========================================================
 # Prompt for GitLab Credentials
