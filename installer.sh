@@ -23,7 +23,6 @@ FUNCTIONS_LIB_PATH="/tmp/functions.sh"
 FUNCTIONS_LIB_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/bash-functions/-/raw/main/common-functions.sh"
 GITLAB_BASE_URL="https://gitlab.broadcastutilities.nl/broadcastutilities/radio/audiostack/-/raw/main"
 ICECAST_XML="/etc/icecast2/icecast.xml"
-TIMEZONE="Europe/Amsterdam"
 
 # ========================================================
 # Function to Download Files with Authentication
@@ -78,6 +77,7 @@ set_timezone "${TIMEZONE}"
 # ========================================================
 echo
 echo -e "${BLUE}Please provide the following information:${NC}"
+ask_user "TIMEZONE" "$(cat /etc/timezone)" "Specify the timezone (e.g., Europe/Amsterdam)" "str"
 ask_user "HOSTNAMES" "localhost" "Specify the host name(s) (e.g., icecast.example.com) separated by a space" "str"
 ask_user "SOURCEPASS" "hackme" "Specify the source and relay password" "str"
 ask_user "ADMINPASS" "hackme" "Specify the admin password" "str"
