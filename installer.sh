@@ -284,10 +284,10 @@ def output_icecast_stream(~format, ~description, ~mount, ~source) =
     host=icecastserver,
     port=icecastport,
     password=icecastpassword,
-    name=${STATION_NAME},
+    name="${STATION_NAME}",
     description=description,
-    genre=${STATION_GENRE},
-    url=${STATION_URL},
+    genre="${STATION_GENRE}",
+    url="${STATION_URL}",
     public=true,
     mount=mount,
     source
