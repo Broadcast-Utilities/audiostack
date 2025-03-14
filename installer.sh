@@ -217,30 +217,31 @@ studio_b =
   )
 
 # Log silence detection and resumption
+# ...existing code...
 studio_a =
   blank.detect(
-    id="detect_studio_a",
-    max_blank=15.0,
-    min_noise=15.0,
-    action=fun (_) ->
+    ~id="detect_studio_a",
+    ~max_blank=15.0,
+    ~min_noise=15.0,
+    ~action=fun (_) ->
       log.info("studio_a", "silence detected"),
-    on_noise=fun (_) ->
+    ~on_noise=fun (_) ->
       log.info("studio_a", "audio resumed"),
     studio_a
   )
 
 studio_b =
   blank.detect(
-    id="detect_studio_b",
-    max_blank=15.0,
-    min_noise=15.0,
-    action=fun (_) ->
+    ~id="detect_studio_b",
+    ~max_blank=15.0,
+    ~min_noise=15.0,
+    ~action=fun (_) ->
       log.info("studio_b", "silence detected"),
-    on_noise=fun (_) ->
+    ~on_noise=fun (_) ->
       log.info("studio_b", "audio resumed"),
     studio_b
   )
-
+# ...existing code...
 
 # Consider inputs unavailable when silent
 studio_a =
