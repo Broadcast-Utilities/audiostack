@@ -124,12 +124,7 @@ validate_inputs() {
 validate_inputs
 
 mkdir -p "${CONFIG_DIR}"
-mkdir -p "${CONFIG_DIR}/${CONFIGNAME}/web"
-mkdir -p "${CONFIG_DIR}/${CONFIGNAME}/admin"
-mkdir -p "${CONFIG_DIR}/${CONFIGNAME}/log"
-mkdir -p "${CONFIG_DIR}/${CONFIGNAME}/share"
-# Set proper permissions for docker volumes
-chmod -R 777 "${CONFIG_DIR}/${CONFIGNAME}"
+chmod -R 777 "${CONFIG_DIR}"
 
 # ========================================================
 # Generate Icecast Configuration
