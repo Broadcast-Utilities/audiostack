@@ -337,7 +337,7 @@ docker run --name ${CONFIGNAME}-liquidsoap -d --restart=always \
 -p $INPUT_2_PORT:$INPUT_2_PORT \
 --volume ${CONFIG_DIR}/${CONFIGNAME}.liq:/etc/liquidsoap/script.liq \
 --volume ${CONFIG_DIR}/${CONFIGNAME}/:/audio/fallback.wav \
-pltnk/liquidsoap
+savonet/liquidsoap:v2.3.1
 
 chmod 644 "${CONFIG_DIR}/${CONFIGNAME}.wav"
 chown -R 1000:1000 "${CONFIG_DIR}/${CONFIGNAME}.wav"
