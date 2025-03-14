@@ -123,33 +123,33 @@ validate_inputs() {
 validate_inputs
 
 mkdir -p "${CONFIG_DIR}"
-mkdir -p "${CONFIG_DIR}/$CONFIGNAME/web"
-mkdir -p "${CONFIG_DIR}/$CONFIGNAME/admin"
-mkdir -p "${CONFIG_DIR}/$CONFIGNAME/log"
-mkdir -p "${CONFIG_DIR}/$CONFIGNAME/share"
+mkdir -p "${CONFIG_DIR}/${CONFIGNAME}/web"
+mkdir -p "${CONFIG_DIR}/${CONFIGNAME}/admin"
+mkdir -p "${CONFIG_DIR}/${CONFIGNAME}/log"
+mkdir -p "${CONFIG_DIR}/${CONFIGNAME}/share"
 # Set proper permissions for docker volumes
 chmod -R 777 "${CONFIG_DIR}/${CONFIGNAME}"
 
 # ========================================================
 # Generate Icecast Configuration
 # ========================================================
-cat <<EOF > "${CONFIG_DIR}/$CONFIGNAME.xml"
+cat <<EOF > "${CONFIG_DIR}/${CONFIGNAME}.xml"
 <icecast>
-  <location>$LOCATED</location>
-  <admin>$ADMINMAIL</admin>
-  <hostname>$HOSTNAME</hostname>
+  <location>${LOCATED}</location>
+  <admin>${ADMINMAIL}</admin>
+  <hostname>${HOSTNAME}</hostname>
 
   <limits>
-    <clients>$CLIENTS_LIMIT</clients>
-    <sources>$SOURCES_LIMIT</sources>
-    <burst-size>$BURST_SIZE</burst-size>
+    <clients>${CLIENTS_LIMIT}</clients>
+    <sources>${SOURCES_LIMIT}</sources>
+    <burst-size>${BURST_SIZE}</burst-size>
   </limits>
 
   <authentication>
-    <source-password>$SOURCEPASS</source-password>
-    <relay-password>$SOURCEPASS</relay-password>
-    <admin-user>$ADMINUSER</admin-user>
-    <admin-password>$ADMINPASS</admin-password>
+    <source-password>${SOURCEPASS}</source-password>
+    <relay-password>${SOURCEPASS}</relay-password>
+    <admin-user>${ADMINUSER}</admin-user>
+    <admin-password>${ADMINPASS}</admin-password>
   </authentication>
 
   <listen-socket>
@@ -177,22 +177,22 @@ cat <<EOF > "${CONFIG_DIR}/$CONFIGNAME.xml"
 EOF
 
 docker run -d \
-    -p $PORT:8000 \
-    -v ${CONFIG_DIR}/$CONFIGNAME.xml:/etc/icecast.xml \
-    -v ${CONFIG_DIR}/$CONFIGNAME/web:/usr/share/icecast2/web \
-    -v ${CONFIG_DIR}/$CONFIGNAME/admin:/usr/share/icecast2/admin \
-    -v ${CONFIG_DIR}/$CONFIGNAME/log:/var/log/icecast2 \
-    -v ${CONFIG_DIR}/$CONFIGNAME/share:/usr/share/icecast2 \
+    -p ${PORT}:8000 \
+    -v ${CONFIG_DIR}/${CONFIGNAME}.xml:/etc/icecast.xml \
+    -v ${CONFIG_DIR}/${CONFIGNAME}/web:/usr/share/icecast2/web \
+    -v ${CONFIG_DIR}/${CONFIGNAME}/admin:/usr/share/icecast2/admin \
+    -v ${CONFIG_DIR}/${CONFIGNAME}/log:/var/log/icecast2 \
+    -v ${CONFIG_DIR}/${CONFIGNAME}/share:/usr/share/icecast2 \
     --name ${CONFIGNAME}_icecast \
     libretime/icecast:2.4.4
 
 sleep 5
 
-cat <<EOF > "${CONFIG_DIR}/$CONFIGNAME.liq"
+cat <<EOF > "${CONFIG_DIR}/${CONFIGNAME}.liq"
 # Streaming configuration
-icecastserver = "$HOSTNAME"
-icecastport = $PORT
-icecastpassword = "$SOURCEPASS"
+icecastserver = "${HOSTNAME}"
+icecastport = ${PORT}
+icecastpassword = "${SOURCEPASS}"
 fallbackfile = "/audio/fallback.wav"
 
 
@@ -204,16 +204,16 @@ noodband = single(fallbackfile)
 studio_a =
   input.harbor(
     "/",
-    port=$INPUT_1_PORT,
-    password="$INPUT_1_PASS"
+    port=${INPUT_1_PORT},
+    password="${INPUT_1_PASS}"
   )
 
 # Input for backup studio stream
 studio_b =
   input.harbor(
     "/",
-    port=$INPUT_2_PORT,
-    password="$INPUT_2_PASS"
+    port=${INPUT_2_PORT},
+    password="${INPUT_2_PASS}"
   )
 
 # Log silence detection and resumption
@@ -286,10 +286,10 @@ def output_icecast_stream(~format, ~description, ~mount, ~source) =
     host=icecastserver,
     port=icecastport,
     password=icecastpassword,
-    name="$STATION_NAME",
-    description="$STATION_DESC",
-    genre="$STATION_GENRE",
-    url="$STATION_URL",
+    name="${STATION_NAME}",
+    description="${STATION_DESC}",
+    genre="${STATION_GENRE}",
+    url="${STATION_URL}",
     public=true,
     mount=mount,
     source
@@ -300,7 +300,7 @@ end
 output_icecast_stream(
   format=%mp3(bitrate = 192, samplerate = 48000, internal_quality = 0),
   description="HQ Stream (192kbit MP3)",
-  mount="/$STATION_NAME.mp3",
+  mount="/${STATION_NAME}.mp3",
   source=audio_to_icecast
 )
 
@@ -316,7 +316,7 @@ output_icecast_stream(
     sbr_mode = true
   ),
   description="Mobile Stream (96kbit AAC)",
-  mount="/$STATION_NAME.aac",
+  mount="/${STATION_NAME}.aac",
   source=audio_to_icecast
 )
 EOF
@@ -326,24 +326,25 @@ sed -i '1s/^\xEF\xBB\xBF//' "${CONFIG_DIR}/$CONFIGNAME.liq"
 # ...existing code...
 
 echo -e "${BLUE}Downloading emergency audio file from ${EMERGENCY_AUDIO_URL}${NC}"
-curl -sL "$EMERGENCY_AUDIO_URL" -o "${CONFIG_DIR}/$CONFIGNAME.wav"
+curl -sL "${EMERGENCY_AUDIO_URL}" -o "${CONFIG_DIR}/$CONFIGNAME.wav"
 if [ $? -ne 0 ]; then
     echo -e "${RED}Error: Failed to download emergency audio file.${NC}"
     exit 1
-fi
-chmod 644 "${CONFIG_DIR}/$CONFIGNAME.wav"
-chown -R 1000:1000 "${CONFIG_DIR}/$CONFIGNAME.wav"
+fi # ...existing code...
 
-docker run -d \
-    -p $INPUT_1_PORT:$INPUT_1_PORT \
-    -p $INPUT_2_PORT:$INPUT_2_PORT \
-    -v ${CONFIG_DIR}/$CONFIGNAME.liq:/scripts/current.liq \
-    -v ${CONFIG_DIR}/$CONFIGNAME.wav:/audio/fallback.wav \
-    -e TZ=$TIMEZONE \
-    --entrypoint /scripts/current.liq \
-    --restart unless-stopped \
-    --name ${CONFIGNAME}_liquidsoap \
-    pltnk/liquidsoap
+docker run --name ${CONFIGNAME}-liquidsoap -d --restart=always \
+-p $INPUT_1_PORT:$INPUT_1_PORT \
+-p $INPUT_2_PORT:$INPUT_2_PORT \
+--volume ${CONFIG_DIR}/${CONFIGNAME}.liq:/etc/liquidsoap/script.liq \
+--volume ${CONFIG_DIR}/${CONFIGNAME}/:/audio/fallback.wav \
+pltnk/liquidsoap
+
+chmod 644 "${CONFIG_DIR}/${CONFIGNAME}.wav"
+chown -R 1000:1000 "${CONFIG_DIR}/${CONFIGNAME}.wav"
+
+
+
+rm -rf "${CONFIG_DIR}/old_logs/*"
 
 # ========================================================
 # Cleanup & Secure Credentials
