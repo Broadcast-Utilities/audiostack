@@ -340,7 +340,7 @@ docker run -d \
     -v ${CONFIG_DIR}/$CONFIGNAME.liq:/scripts/current.liq \
     -v ${CONFIG_DIR}/$CONFIGNAME.wav:/audio/fallback.wav \
     -e TZ=$TIMEZONE \
-    -c /scripts/current.liq \
+    --command /scripts/current.liq \
     --restart unless-stopped \
     --name ${CONFIGNAME}_liquidsoap \
     pltnk/liquidsoap
