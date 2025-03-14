@@ -178,11 +178,7 @@ EOF
 
 docker run -d \
     -p ${PORT}:8000 \
-    -v ${CONFIG_DIR}/${CONFIGNAME}.xml:/etc/icecast.xml \
-    -v ${CONFIG_DIR}/${CONFIGNAME}/web:/usr/share/icecast2/web \
-    -v ${CONFIG_DIR}/${CONFIGNAME}/admin:/usr/share/icecast2/admin \
-    -v ${CONFIG_DIR}/${CONFIGNAME}/log:/var/log/icecast2 \
-    -v ${CONFIG_DIR}/${CONFIGNAME}/share:/usr/share/icecast2 \
+    -v ${CONFIG_DIR}/${CONFIGNAME}.xml:/etc/icecast2/icecast.xml \
     --name ${CONFIGNAME}_icecast \
     libretime/icecast:2.4.4
 
