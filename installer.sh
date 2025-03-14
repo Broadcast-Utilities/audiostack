@@ -76,6 +76,7 @@ ask_user "TIMEZONE" "$(cat /etc/timezone)" "Specify the timezone (e.g., Europe/A
 ask_user "HOSTNAME" "localhost" "Specify the host name (e.g., icecast.example.com)" "str"
 ask_user "PORT" "8000" "Specify the port" "num"
 ask_user "CONFIGNAME" "default" "Specify the configuration/container name(s)" "str"
+ask_user "SLUG" "default" "Specify the slug name" "str"
 
 echo -e "${BOLD}Next, we need to set some contact/location info.${NC}"
 ask_user "LOCATED" "Earth" "Where is this server located?" "str"
@@ -180,8 +181,7 @@ docker run -d \
     -p ${PORT}:8000 \
     -v ${CONFIG_DIR}/${CONFIGNAME}.xml:/etc/icecast2/icecast.xml \
     --name ${CONFIGNAME}_icecast \
-    libretime/icecast:2.4.4
-
+    pltnk/icecast2
 sleep 5
 
 cat <<EOF > "${CONFIG_DIR}/${CONFIGNAME}.liq"
@@ -303,7 +303,7 @@ end
 output_icecast_stream(
   format=%mp3(bitrate = 192, samplerate = 48000, internal_quality = 0),
   description="HQ Stream (192kbit MP3)",
-  mount="/${STATION_NAME}.mp3",
+  mount="/${SLUG}.mp3",
   source=audio_to_icecast
 )
 
@@ -319,7 +319,7 @@ output_icecast_stream(
     sbr_mode = true
   ),
   description="Mobile Stream (96kbit AAC)",
-  mount="/${STATION_NAME}.aac",
+  mount="/${SLUG}.aac",
   source=audio_to_icecast
 )
 EOF
