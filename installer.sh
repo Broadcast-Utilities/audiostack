@@ -217,31 +217,43 @@ studio_b =
   )
 
 # Log silence detection and resumption
-# ...existing code...
 studio_a =
   blank.detect(
-    ~id="detect_studio_a",
-    ~max_blank=15.0,
-    ~min_noise=15.0,
-    ~action=fun (_) ->
-      log.info("studio_a", "silence detected"),
-    ~on_noise=fun (_) ->
-      log.info("studio_a", "audio resumed"),
+    id="detect_studio_a",
+    max_blank=15.0,
+    min_noise=15.0,
+    fun () ->
+      log_event(
+        "studio_a",
+        "silence detected"
+      ),
+    on_noise=
+      fun () ->
+        log_event(
+          "studio_a",
+          "audio resumed"
+        ),
     studio_a
   )
 
 studio_b =
   blank.detect(
-    ~id="detect_studio_b",
-    ~max_blank=15.0,
-    ~min_noise=15.0,
-    ~action=fun (_) ->
-      log.info("studio_b", "silence detected"),
-    ~on_noise=fun (_) ->
-      log.info("studio_b", "audio resumed"),
+    id="detect_studio_b",
+    max_blank=15.0,
+    min_noise=15.0,
+    fun () ->
+      log_event(
+        "studio_b",
+        "silence detected"
+      ),
+    on_noise=
+      fun () ->
+        log_event(
+          "studio_b",
+          "audio resumed"
+        ),
     studio_b
   )
-# ...existing code...
 
 # Consider inputs unavailable when silent
 studio_a =
@@ -323,10 +335,10 @@ fi # ...existing code...
 docker run --name ${CONFIGNAME}-liquidsoap -d --restart=always \
   -p ${INPUT_1_PORT}:${INPUT_1_PORT} \
   -p ${INPUT_2_PORT}:${INPUT_2_PORT} \
-  --volume /etc/audiostack/${CONFIGNAME}.liq:/etc/liquidsoap/script.liq \
+  --volume /etc/audiostack/:/config \
   --volume /etc/audiostack/:/audio \
   --entrypoint "liquidsoap" \
-  savonet/liquidsoap:v2.3.1 /etc/liquidsoap/script.liq
+  savonet/liquidsoap:v2.3.1 /config/${CONFIGNAME}.liq
 
 
 chmod 644 "${CONFIG_DIR}/${CONFIGNAME}.wav"
