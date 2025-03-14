@@ -223,13 +223,13 @@ studio_a =
     max_blank=15.0,
     min_noise=15.0,
     fun () ->
-      log_event(
+      log(
         "studio_a",
         "silence detected"
       ),
     on_noise=
       fun () ->
-        log_event(
+        log (
           "studio_a",
           "audio resumed"
         ),
@@ -242,13 +242,13 @@ studio_b =
     max_blank=15.0,
     min_noise=15.0,
     fun () ->
-      log_event(
+      log(
         "studio_b",
         "silence detected"
       ),
     on_noise=
       fun () ->
-        log_event(
+        log(
           "studio_b",
           "audio resumed"
         ),
