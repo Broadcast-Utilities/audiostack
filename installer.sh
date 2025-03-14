@@ -193,7 +193,7 @@ cat <<EOF > "${CONFIG_DIR}/${CONFIGNAME}.liq"
 icecastserver = "${HOSTNAME}"
 icecastport = ${PORT}
 icecastpassword = "${SOURCEPASS}"
-fallbackfile = "/audio/fallback.wav"
+fallbackfile = "/audio/${CONFIGNAME}.wav"
 
 # Logging function for various events
 def log_event(input_name, event) =
