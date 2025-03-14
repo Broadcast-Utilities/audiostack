@@ -333,12 +333,13 @@ if [ $? -ne 0 ]; then
 fi # ...existing code...
 
 docker run --name ${CONFIGNAME}-liquidsoap -d --restart=always \
--p $INPUT_1_PORT:$INPUT_1_PORT \
--p $INPUT_2_PORT:$INPUT_2_PORT \
---volume ${CONFIG_DIR}/${CONFIGNAME}.liq:/etc/liquidsoap/script.liq \
---volume ${CONFIG_DIR}/${CONFIGNAME}/:/audio/fallback.wav \
---entrypoint liquidsoap /etc/liquidsoap/script.liq \
-savonet/liquidsoap:v2.3.1
+  -p ${INPUT_1_PORT}:${INPUT_1_PORT} \
+  -p ${INPUT_2_PORT}:${INPUT_2_PORT} \
+  --volume /etc/audiostack/${CONFIGNAME}.liq:/etc/liquidsoap/script.liq \
+  --volume /etc/audiostack/:/audio \
+  --entrypoint "liquidsoap" \
+  savonet/liquidsoap:v2.3.1 /etc/liquidsoap/script.liq
+
 
 chmod 644 "${CONFIG_DIR}/${CONFIGNAME}.wav"
 chown -R 1000:1000 "${CONFIG_DIR}/${CONFIGNAME}.wav"
