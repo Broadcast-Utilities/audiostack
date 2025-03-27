@@ -8,7 +8,7 @@ set -e
 # ========================================================
 FUNCTIONS_LIB_PATH="./functions.sh"
 CONFIG_DIR="/etc/audiostack"
-FUNCTIONS_LIB_URL="https://raw.githubusercontent.com/Broadcast-Utilities/bash-functions/refs/tags/v.1.0.0/common-functions.sh"
+FUNCTIONS_LIB_URL="https://raw.githubusercontent.com/Broadcast-Utilities/bash-functions/v.1.0.0/common-functions.sh"
 
 # Define colors first for use in the download function
 BLUE='\033[0;34m'
