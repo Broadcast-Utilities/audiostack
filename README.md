@@ -1,15 +1,40 @@
 # AudioStack
+
 ## Broadcast Utilities
-This repository contains an audio streaming solution. Using [Liquidsoap](https://www.liquidsoap.info) and [Icecast](https://icecast.org/).
+
+**AudioStack** is a modular audio streaming solution built on top of [Liquidsoap](https://www.liquidsoap.info) and [Icecast](https://icecast.org). It is designed to provide reliable, failover-capable broadcasting with minimal manual intervention.
+
+---
 
 ## Components
-1. **Liquidsoap**: Acts as the primary audio router and transcoder.
-2. **Icecast**: Functions as a public server for distributing the audio stream.
 
-## System design
-The system design involves delivering the broadcast through SRT. Liquidsoap uses the main input (SRT 1) as much as possible. If it becomes unavailable or silent, the system switches to an emergency track.
+1. **Liquidsoap**  
+   Serves as the central audio router and transcoder. It handles source selection, failover logic, and stream processing.
+
+2. **Icecast**  
+   Acts as the public-facing distribution server, delivering audio streams to end users or relay targets over the internet.
+
+---
+
+## System Design
+
+The architecture prioritizes uninterrupted streaming through a tiered source fallback system:
+
+- **Primary Source**: `STUDIO_A`  
+  Used as the main audio input when active and not silent.
+
+- **Fallback 1**: `STUDIO_B`  
+  Automatically selected when `STUDIO_A` is unavailable or silent.
+
+- **Fallback 2**: *Emergency Track*  
+  A predefined local audio file is played when both studio sources are unavailable or silent.
+
+This structured failover mechanism ensures continuous audio delivery in all scenarios.
+
+---
 
 ## Compatibility
-1. Tested on Ubuntu 24.04.
-2. Supports x86_64 system architectures.
-3. Requires an internet connection for script dependencies.
+
+- Tested on **Ubuntu 24.04**
+- Supports **x86_64** architectures
+- Requires an **active internet connection** for resolving external script dependencies
