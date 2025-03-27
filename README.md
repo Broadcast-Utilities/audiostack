@@ -38,3 +38,6 @@ This structured failover mechanism ensures continuous audio delivery in all scen
 - Tested on **Ubuntu 24.04**
 - Supports **x86_64** architectures
 - Requires an **active internet connection** for resolving external script dependencies
+
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
