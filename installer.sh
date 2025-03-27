@@ -8,7 +8,7 @@ set -e
 # ========================================================
 FUNCTIONS_LIB_PATH="/tmp/functions.sh"
 CONFIG_DIR="/etc/audiostack"
-FUNCTIONS_LIB_URL="https://gitlab.broadcastutilities.nl/api/v4/projects/4/repository/files/common-functions.sh/raw?ref=main"
+FUNCTIONS_LIB_URL="https://raw.githubusercontent.com/Broadcast-Utilities/bash-functions/refs/tags/v.1.0.0/common-functions.sh"
 
 # Define colors first for use in the download function
 BLUE='\033[0;34m'
@@ -50,7 +50,7 @@ cat << "EOF"
  *              AudioStack              *
  *              Installer               *
  *  Made with ♥ by Broadcast Utilities  *
- *                V2.0.0                *
+ *                V1.0.0                *
  ****************************************
 EOF
 
@@ -172,11 +172,12 @@ cat <<EOF > "${CONFIG_DIR}/${CONFIGNAME}.xml"
 </icecast>
 EOF
 
+docker pull ghcr.io/broadcast-utilities/icecast2-dockerized:latest
 docker run -d \
     -p ${PORT}:8000 \
     -v ${CONFIG_DIR}/${CONFIGNAME}.xml:/etc/icecast2/icecast.xml \
     --name ${CONFIGNAME}_icecast \
-    pltnk/icecast2
+    ghcr.io/broadcast-utilities/icecast2-dockerized:latest
 sleep 5
 
 cat <<EOF > "${CONFIG_DIR}/${CONFIGNAME}.liq"
