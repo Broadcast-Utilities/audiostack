@@ -6,7 +6,7 @@ set -e
 # ========================================================
 # Define Paths & URLs
 # ========================================================
-FUNCTIONS_LIB_PATH="/tmp/functions.sh"
+FUNCTIONS_LIB_PATH="./functions.sh"
 CONFIG_DIR="/etc/audiostack"
 FUNCTIONS_LIB_URL="https://raw.githubusercontent.com/Broadcast-Utilities/bash-functions/refs/tags/v.1.0.0/common-functions.sh"
 
