@@ -50,7 +50,7 @@ cat << "EOF"
  *              AudioStack              *
  *              Installer               *
  *  Made with ♥ by Broadcast Utilities  *
- *                V1.1.0                *
+ *                V1.0.0                *
  ****************************************
 EOF
 
