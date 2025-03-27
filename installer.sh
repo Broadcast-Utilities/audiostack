@@ -25,7 +25,7 @@ download_file() {
   local dest="$2"
 
   echo -e "${BLUE}Downloading: ${url} -> ${dest}${NC}"
-  curl -sLo "${dest}" --header "PRIVATE-TOKEN: glpat-s6joFZTq8adhvwUx5Rcz" "${url}"
+  curl -sLo "${dest}" "${url}"
 }
 
 download_file "${FUNCTIONS_LIB_URL}" "${FUNCTIONS_LIB_PATH}"
