@@ -101,7 +101,7 @@ ask_user "STATION_NAME" "My Station" "Specify the station name" "str"
 ask_user "STATION_URL" "https://example.com" "Specify the station URL" "str"
 ask_user "STATION_GENRE" "Various" "Specify the station genre" "str"
 ask_user "STATION_DESC" "My Station Description" "Specify the station description" "str"
-ask_user "EMERGENCY_AUDIO_URL" "https://example.com/fallback.wav" "Specify the emergency audio URL" "str"
+ask_user "EMERGENCY_AUDIO_URL" "https://example.com/fallback.wav" "Specify the emergency audio-file URL" "str"
 
 # ========================================================
 # Validate User Inputs
