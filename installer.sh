@@ -172,11 +172,12 @@ cat <<EOF > "${CONFIG_DIR}/${CONFIGNAME}.xml"
 </icecast>
 EOF
 
+docker pull ghcr.io/broadcast-utilities/icecast2-dockerized:latest
 docker run -d \
     -p ${PORT}:8000 \
     -v ${CONFIG_DIR}/${CONFIGNAME}.xml:/etc/icecast2/icecast.xml \
     --name ${CONFIGNAME}_icecast \
-    pltnk/icecast2
+    ghcr.io/broadcast-utilities/icecast2-dockerized:latest
 sleep 5
 
 cat <<EOF > "${CONFIG_DIR}/${CONFIGNAME}.liq"
