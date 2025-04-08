@@ -144,7 +144,7 @@ docker run -d \
   -e ICECAST_HOSTNAME="${HOSTNAME}" \
   -p ${PORT}:8000 \
   --name ${CONFIGNAME}-icecast \
-  icecast2dockerized:main
+  ghcr.io/broadcast-utilities/icecast2dockerized:main
 
 sleep 10
 
