@@ -84,6 +84,7 @@ ask_user "ADMINMAIL" "root@localhost.local" "What's the admin's email?" "email"
 
 echo -e "${BOLD}Next, we must set some security settings.${NC}"
 ask_user "SOURCEPASS" "" "Specify the source and relay password" "str"
+ask_user "RELAYPASS" "" "Specify the relay password" "str"
 ask_user "ADMINUSER" "" "Specify the admin username" "str"
 ask_user "ADMINPASS" "" "Specify the admin password" "str"
 
@@ -127,58 +128,22 @@ mkdir -p "${CONFIG_DIR}"
 chmod -R 777 "${CONFIG_DIR}"
 
 # ========================================================
-# Generate Icecast Configuration
+# Configure and Start Icecast2
 # ========================================================
-cat <<EOF > "${CONFIG_DIR}/${CONFIGNAME}.xml"
-<icecast>
-  <location>${LOCATED}</location>
-  <admin>${ADMINMAIL}</admin>
-  <hostname>${HOSTNAME}</hostname>
-
-  <limits>
-    <clients>${CLIENTS_LIMIT}</clients>
-    <sources>${SOURCES_LIMIT}</sources>
-    <burst-size>${BURST_SIZE}</burst-size>
-  </limits>
-
-  <authentication>
-    <source-password>${SOURCEPASS}</source-password>
-    <relay-password>${SOURCEPASS}</relay-password>
-    <admin-user>${ADMINUSER}</admin-user>
-    <admin-password>${ADMINPASS}</admin-password>
-  </authentication>
-
-  <listen-socket>
-    <port>8000</port>
-  </listen-socket>
-
-  <http-headers>
-    <header name="Access-Control-Allow-Origin" value="*" />
-    <header name="X-Robots-Tag" value="noindex, noarchive" />
-  </http-headers>
-
-  <paths>
-    <basedir>/usr/share/icecast2</basedir>
-    <logdir>/var/log/icecast2</logdir>
-    <webroot>/usr/share/icecast2/web</webroot>
-    <adminroot>/usr/share/icecast2/admin</adminroot>
-    <alias source="/" destination="/status.xsl"/>
-  </paths>
-
-  <logging>
-    <logsize>0</logsize>
-    <loglevel>2</loglevel>
-  </logging>
-</icecast>
-EOF
-
 docker pull ghcr.io/broadcast-utilities/icecast2-dockerized:latest
 docker run -d \
-    -p ${PORT}:8000 \
-    -v ${CONFIG_DIR}/${CONFIGNAME}.xml:/etc/icecast2/icecast.xml \
-    --name ${CONFIGNAME}_icecast \
-    ghcr.io/broadcast-utilities/icecast2-dockerized:latest
-sleep 5
+  -e ICECAST_SOURCE_PASSWORD="${SOURCEPASS}" \
+  -e ICECAST_ADMIN_PASSWORD="${ADMINPASS}" \
+  -e ICECAST_RELAY_PASSWORD="${RELAYPASS}" \
+  -e ICECAST_ADMIN_USERNAME="${ADMINUSER}" \
+  -e ICECAST_ADMIN_EMAIL="${ADMINMAIL}" \
+  -e ICECAST_LOCATION="${LOCATED}" \ 
+  -e ICECAST_HOSTNAME="${HOSTNAME}" \
+  -p 8000:8000 \
+  --name ${CONFIGNAME} \
+  icecast2dockerized:latest
+
+sleep 10
 
 cat <<EOF > "${CONFIG_DIR}/${CONFIGNAME}.liq"
 # Streaming configuration
