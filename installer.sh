@@ -133,7 +133,7 @@ chmod -R 777 "${CONFIG_DIR}"
 # ========================================================
 # Configure and Start Icecast2
 # ========================================================
-docker pull ghcr.io/broadcast-utilities/icecast2-dockerized:latest
+docker pull ghcr.io/broadcast-utilities/icecast2-dockerized:main
 docker run -d \
   -e ICECAST_SOURCE_PASSWORD="${SOURCEPASS}" \
   -e ICECAST_ADMIN_PASSWORD="${ADMINPASS}" \
@@ -144,7 +144,7 @@ docker run -d \
   -e ICECAST_HOSTNAME="${HOSTNAME}" \
   -p ${PORT}:8000 \
   --name ${CONFIGNAME}-icecast \
-  icecast2dockerized:latest
+  icecast2dockerized:main
 
 sleep 10
 
@@ -309,11 +309,9 @@ docker run -d --name ${CONFIGNAME}-liquidsoap -d --restart=always \
 chmod 644 "${CONFIG_DIR}/${CONFIGNAME}.wav"
 chown -R 1000:1000 "${CONFIG_DIR}/${CONFIGNAME}.wav"
 
-docker pull ghcr.io/broadcast-utilities/audiologger-dockerized 
-docker run -d \
-  --name ${CONFIGNAME}-audiologger \
+docker pull ghcr.io/broadcast-utilities/audiologger-dockerized:main
   -v ${AUDIOLOG_DIR}:/var/log/audiologger \
-  ghcr.io/broadcast-utilities/audiologger-dockerized:latest
+  ghcr.io/broadcast-utilities/audiologger-dockerized:main
 
 
 
