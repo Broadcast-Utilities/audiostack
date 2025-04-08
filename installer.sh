@@ -341,13 +341,16 @@ chmod 644 "${CONFIG_DIR}/${CONFIGNAME}.wav"
 chown -R 1000:1000 "${CONFIG_DIR}/${CONFIGNAME}.wav"
 
 
-
+# ========================================================
+# Cleanup
+# ========================================================
+echo -e "${BLUE}Cleaning up...${NC}"
 rm -rf "${CONFIG_DIR}/old_logs/*"
 
+
 # ========================================================
-# Cleanup & Secure Credentials
+# Display Completion Message
 # ========================================================
-unset GITLAB_USER GITLAB_TOKEN
 echo -e "${GREEN}Installation completed successfully for ${HOSTNAME}!${NC}"
 echo -e "${GREEN}Icecast is now running at http://${HOSTNAME}:${PORT}${NC}"
 echo -e "${GREEN}Liquidsoap is running with inputs on ports ${INPUT_1_PORT} and ${INPUT_2_PORT}${NC}"
