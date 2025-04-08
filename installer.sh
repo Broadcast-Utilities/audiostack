@@ -104,6 +104,9 @@ ask_user "STATION_GENRE" "Various" "Specify the station genre" "str"
 ask_user "STATION_DESC" "My Station Description" "Specify the station description" "str"
 ask_user "EMERGENCY_AUDIO_URL" "https://example.com/fallback.wav" "Specify the emergency audio-file URL" "str"
 
+echo -e "${BOLD}Now we need to configure the audiologger:${NC}"
+ask_user "AUDIOLOG_DIR" "/var/audio/"
+
 # ========================================================
 # Validate User Inputs
 # ========================================================
@@ -291,7 +294,7 @@ curl -sL "${EMERGENCY_AUDIO_URL}" -o "${CONFIG_DIR}/$CONFIGNAME.wav"
 if [ $? -ne 0 ]; then
     echo -e "${RED}Error: Failed to download emergency audio file.${NC}"
     exit 1
-fi # ...existing code...
+fi
 
 docker run --name ${CONFIGNAME}-liquidsoap -d --restart=always \
   -p ${INPUT_1_PORT}:${INPUT_1_PORT} \
@@ -304,6 +307,16 @@ docker run --name ${CONFIGNAME}-liquidsoap -d --restart=always \
 
 chmod 644 "${CONFIG_DIR}/${CONFIGNAME}.wav"
 chown -R 1000:1000 "${CONFIG_DIR}/${CONFIGNAME}.wav"
+
+docker pull ghcr.io/broadcast-utilities/audiologger-dockerized 
+docker run -d \
+  --name ${CONFIGNAME}-audiologger \
+  -v ${AUDIOLOG_DIR}:/var/log/audiologger \
+  ghcr.io/broadcast-utilities/audiologger-dockerized:latest
+
+
+
+
 
 
 
