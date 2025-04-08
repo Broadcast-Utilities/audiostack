@@ -314,7 +314,7 @@ output_icecast_stream(
     transmux = 'adts',
     sbr_mode = true
   ),
-  description="Mobile Stream (96kbit AAC)",
+  description="LQ Stream (96kbit AAC)",
   mount="/${SLUG}.aac",
   source=audio_to_icecast
 )
