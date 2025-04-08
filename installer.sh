@@ -296,7 +296,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-docker run --name ${CONFIGNAME}-liquidsoap -d --restart=always \
+docker pull savonet/liquidsoap:v2.3.1
+docker run -d --name ${CONFIGNAME}-liquidsoap -d --restart=always \
   -p ${INPUT_1_PORT}:${INPUT_1_PORT} \
   -p ${INPUT_2_PORT}:${INPUT_2_PORT} \
   --volume /etc/audiostack/:/config \
