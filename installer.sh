@@ -142,8 +142,8 @@ docker run -d \
   -e ICECAST_ADMIN_EMAIL="${ADMINMAIL}" \
   -e ICECAST_LOCATION="${LOCATED}" \ 
   -e ICECAST_HOSTNAME="${HOSTNAME}" \
-  -p 8000:8000 \
-  --name ${CONFIGNAME} \
+  -p ${PORT}:8000 \
+  --name ${CONFIGNAME}-icecast \
   icecast2dockerized:latest
 
 sleep 10
