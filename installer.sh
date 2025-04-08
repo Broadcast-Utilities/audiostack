@@ -341,12 +341,6 @@ chmod 644 "${CONFIG_DIR}/${CONFIGNAME}.wav"
 chown -R 1000:1000 "${CONFIG_DIR}/${CONFIGNAME}.wav"
 
 
-# ========================================================
-# Cleanup
-# ========================================================
-echo -e "${BLUE}Cleaning up...${NC}"
-rm -rf "${CONFIG_DIR}/old_logs/*"
-
 
 # ========================================================
 # Display Completion Message
