@@ -312,7 +312,7 @@ chown -R 1000:1000 "${CONFIG_DIR}/${CONFIGNAME}.wav"
 docker pull ghcr.io/broadcast-utilities/audiologger-dockerized:main \
 docker run -d \
   -e 
-  -v ${AUDIOLOG_DIR}:/var/log/audiologger \
+  -v ${AUDIOLOG_DIR}:/audio \
   ghcr.io/broadcast-utilities/audiologger-dockerized:main
 
 
