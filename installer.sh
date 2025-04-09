@@ -133,7 +133,7 @@ chmod -R 777 "${CONFIG_DIR}"
 # ========================================================
 # Configure and Start Icecast2
 # ========================================================
-docker pull ghcr.io/broadcast-utilities/icecast2-dockerized:main
+docker pull ghcr.io/broadcast-utilities/icecast2-dockerized:v2.0.0-beta
 docker run -d \
   -e ICECAST_SOURCE_PASSWORD="${SOURCEPASS}" \
   -e ICECAST_ADMIN_PASSWORD="${ADMINPASS}" \
@@ -144,7 +144,7 @@ docker run -d \
   -e ICECAST_HOSTNAME="${HOSTNAME}" \
   -p ${PORT}:8000 \
   --name ${CONFIGNAME}-icecast \
-  ghcr.io/broadcast-utilities/icecast2-dockerized:main
+  ghcr.io/broadcast-utilities/icecast2-dockerized:v2.0.0-beta
 
 sleep 10
 
